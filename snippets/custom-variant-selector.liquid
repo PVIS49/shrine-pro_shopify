@@ -144,15 +144,13 @@
 
     const VARIANTS   = {{ product.variants | json }};
     const OPT_COUNT  = {{ product.options | size }};
-    const sectionEl  = root.closest('section') || document;
+    const contextEl  = root.closest('section') || document;
 
-    const addBtn = sectionEl.querySelector('button[name="add"], button[type="submit"]:not(.shopify-payment-button__button)');
+    const addBtn = contextEl.querySelector('button[name="add"], button[type="submit"]:not(.shopify-payment-button__button)');
+    const form   = addBtn ? (addBtn.closest('form') || contextEl.querySelector('form[action*="/cart/add"]')) : null;
     if (!addBtn) return;
 
-    const form = addBtn.closest('form') || sectionEl.querySelector('form[action*="/cart/add"]');
-
-    // Helpers
-    const blocks = Array.from(root.querySelectorAll('.custom-variant-selector__block'));
+    const cards = Array.from(root.querySelectorAll('.custom-variant-selector__block'));
 
     function byOptions(o1,o2,o3){
       return VARIANTS.find(v=>{
@@ -163,26 +161,90 @@
     function byId(id){ return VARIANTS.find(v=>String(v.id)===String(id)); }
 
     function getSelectedCard(){
-      return root.querySelector('.custom-variant-selector__block.selected') || blocks[0] || null;
+      return root.querySelector('.custom-variant-selector__block.selected') || cards[0] || null;
     }
     function getSelectedVariant(){
       const c = getSelectedCard(); if (!c) return null;
-      const v = byOptions(c.dataset.o1, c.dataset.o2, c.dataset.o3) || (c.dataset.variantId ? byId(c.dataset.variantId) : null);
-      return v || null;
+      return byOptions(c.dataset.o1, c.dataset.o2, c.dataset.o3) || (c.dataset.variantId ? byId(c.dataset.variantId) : null);
     }
     function getQty(){
-      const q = (form && (form.querySelector('input[name="quantity"]') || form.querySelector('input#Quantity'))) || null;
+      const q = form && (form.querySelector('input[name="quantity"]') || form.querySelector('input#Quantity'));
       const n = q ? parseInt(q.value,10) : 1;
       return (isNaN(n) || n<=0) ? 1 : n;
     }
+
+    // ---- Section Rendering API helpers ----
+    function findCartSectionIds(){
+      const ids = [];
+      // Drawer section (cherche un conteneur de section avec un type cart/minicart)
+      const drawer = document.querySelector(
+        '.cart-drawer[data-section-id], [data-section-type*="cart"][data-section-id], ' +
+        '[id*="CartDrawer"][data-section-id], [data-cart-drawer][data-section-id]'
+      );
+      if (drawer?.dataset.sectionId) ids.push(drawer.dataset.sectionId);
+
+      // Bulle compteur dans le header (met à jour l’icône)
+      const bubble = document.querySelector('.cart-count-bubble, [data-cart-count-bubble]');
+      const bubbleSection = bubble ? bubble.closest('[data-section-id]') : null;
+      if (bubbleSection?.dataset.sectionId && !ids.includes(bubbleSection.dataset.sectionId)) {
+        ids.push(bubbleSection.dataset.sectionId);
+      }
+      return ids;
+    }
+
+    async function renderSections(sectionIds){
+      if (!sectionIds.length) return false;
+      const url = `${window.location.pathname}?sections=${encodeURIComponent(sectionIds.join(','))}`;
+      const res = await fetch(url, { headers: { 'Accept': 'application/json' }});
+      if (!res.ok) return false;
+      const json = await res.json();
+
+      sectionIds.forEach(id=>{
+        const html = json[id];
+        if (!html) return;
+        const current = document.querySelector(`[data-section-id="${id}"]`);
+        if (!current) return;
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html;
+        const replacement = tmp.querySelector(`[data-section-id="${id}"]`) || tmp.firstElementChild;
+        if (replacement) current.replaceWith(replacement);
+      });
+      return true;
+    }
+
+    async function refreshCartUI(){
+      // 1) Tentative “propre” : rerender des sections
+      const ids = findCartSectionIds();
+      const ok  = await renderSections(ids);
+
+      // 2) À défaut, MAJ du compteur via /cart.js
+      try{
+        const cartRes = await fetch('/cart.js', { headers:{'Accept':'application/json'} });
+        if (cartRes.ok){
+          const cart = await cartRes.json();
+          const cnt  = (cart && Array.isArray(cart.items)) ? cart.items.reduce((s,i)=>s+i.quantity,0) : 0;
+          const bubble = document.querySelector('.cart-count-bubble, [data-cart-count-bubble]');
+          if (bubble){
+            const span = bubble.querySelector('span') || bubble;
+            span.textContent = String(cnt);
+            bubble.classList.toggle('hidden', cnt<=0);
+          }
+        }
+      }catch(e){}
+
+      // 3) Signal aux scripts du thème
+      document.dispatchEvent(new CustomEvent('cart:refresh', {detail:{source:'cvs'}}));
+      document.dispatchEvent(new CustomEvent('cart:updated', {detail:{source:'cvs'}}));
+      return ok;
+    }
+
     function openDrawer(){
-      document.dispatchEvent(new CustomEvent('cart:refresh',{detail:{source:'cvs'}}));
       document.dispatchEvent(new CustomEvent('cart:open',{detail:{source:'cvs'}}));
-      document.dispatchEvent(new CustomEvent('product:added',{detail:{source:'cvs'}}));
       document.body.classList.add('cart-open','drawer--cart-open');
       const opener = document.querySelector('[data-cart-drawer-open], [data-action="open-cart"], .js-openCartDrawer, .header__icon--cart, .cart-toggle, .open-cart, #CartDrawer-Open');
       if (opener) opener.click();
     }
+
     function setBtnBusy(on){
       addBtn.classList.toggle('is-loading', !!on);
       addBtn.disabled = !!on;
@@ -190,26 +252,37 @@
     }
     function toast(msg){
       try{
-        // petit feedback discret
         addBtn.dataset.cvsMsg = msg;
         addBtn.classList.add('cvs-bubble');
         setTimeout(()=>addBtn.classList.remove('cvs-bubble'),1800);
       }catch(e){}
     }
 
-    // Sélection via clic carte (visuel seulement ; on n’a plus besoin de pousser dans le form)
-    blocks.forEach(card=>{
+    // Sélection visuelle
+    cards.forEach(card=>{
       card.addEventListener('click', function(e){
-        blocks.forEach(b=>b.classList.remove('selected'));
+        cards.forEach(b=>b.classList.remove('selected'));
         this.classList.add('selected');
         const r=this.querySelector('input[type="radio"]'); if (r) r.checked = true;
       });
     });
 
-    // Handler ATC : AJOUT AJAX + ouverture tiroir
+    // Init visuelle
+    (function init(){
+      const idField = form ? (form.querySelector('select[name="id"], input[name="id"]')) : null;
+      const currentId = (idField && idField.value) || "{{ product.selected_or_first_available_variant.id }}";
+      const initial = cards.find(b => String(b.dataset.variantId)===String(currentId)) || cards[0];
+      if (initial){
+        cards.forEach(b=>b.classList.remove('selected'));
+        initial.classList.add('selected');
+        const r=initial.querySelector('input[type="radio"]'); if (r) r.checked = true;
+      }
+    })();
+
+    // ATC: on gère tout en AJAX + refresh sections + ouverture tiroir
     let inflight = false;
     addBtn.addEventListener('click', async function(ev){
-      ev.preventDefault(); // on remplace l’action native
+      ev.preventDefault();
       if (inflight) return;
 
       const variant = getSelectedVariant();
@@ -222,20 +295,18 @@
       fd.set('id', variant.id);
       fd.set('quantity', qty);
 
-      setBtnBusy(true);
       inflight = true;
+      setBtnBusy(true);
       try{
         const res = await fetch('/cart/add.js', { method:'POST', body:fd, headers:{'Accept':'application/json'} });
         if (!res.ok){
-          const t = await res.text();
-          console.warn('[CVS] add.js error', t);
           toast('Erreur ajout panier');
           return;
         }
-        // OK
+        // Re-render UI du panier AVANT d’ouvrir
+        await refreshCartUI();
         openDrawer();
       }catch(err){
-        console.warn('[CVS] fetch error', err);
         toast('Erreur réseau');
       }finally{
         setBtnBusy(false);
@@ -243,19 +314,7 @@
       }
     });
 
-    // Init visuelle : marque la première carte sélectionnée
-    (function init(){
-      const idField = form ? (form.querySelector('select[name="id"], input[name="id"]')) : null;
-      const currentId = (idField && idField.value) || "{{ product.selected_or_first_available_variant.id }}";
-      const initial = blocks.find(b => String(b.dataset.variantId)===String(currentId)) || blocks[0];
-      if (initial){
-        blocks.forEach(b=>b.classList.remove('selected'));
-        initial.classList.add('selected');
-        const r=initial.querySelector('input[type="radio"]'); if (r) r.checked = true;
-      }
-    })();
-
-    // Petit style pour le feedback du bouton
+    // Styles de feedback
     const style = document.createElement('style');
     style.textContent = `
       .is-loading{opacity:.7; pointer-events:none; position:relative;}
