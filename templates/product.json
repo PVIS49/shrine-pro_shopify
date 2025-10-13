@@ -260,8 +260,8 @@
           "type": "reviews",
           "settings": {
             "color_scheme": "background-1",
-            "show_custom_bg": false,
-            "custom_bg_color": "#f2f2f2",
+            "show_custom_bg": true,
+            "custom_bg_color": "#f3f3f3",
             "corner_radius": 12,
             "border_width": 0,
             "border_color": "#b7b7b7",
@@ -280,8 +280,8 @@
             "text_1": "<p>« J'ai repris confiance en moi »</p>",
             "author_2": "<em>Raphaël</em> [stars]",
             "text_2": "<p>« Je n'ai jamais eu autant de succès, merci ! »</p>",
-            "author_3": "<em>Author</em> [stars]",
-            "text_3": "<p>Share positive thoughts and feedback from your customer.</p>",
+            "author_3": "<em>Rayan </em>[stars]",
+            "text_3": "<p>« Il sent incroyablement bon, ma copine valide »</p>",
             "margin_top": 24,
             "margin_bottom": 24
           }
