@@ -293,6 +293,7 @@
             "heading_size": "medium",
             "icon": "check_box",
             "filled_icon": false,
+            "custom_icon": "shopify://shop_images/fragrance_24dp_1A1A1A_FILL0_wght400_GRAD0_opsz24.svg",
             "collapse_icon": "carret",
             "display_top_border": true,
             "open": false,
