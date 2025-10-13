@@ -141,134 +141,76 @@
               || document.querySelector(".custom-variant-selector");
     if (!root) return;
 
-    // Formulaire produit (section courante)
     const form =
       document.getElementById("product-form-{{ section.id }}") ||
       root.closest("section")?.querySelector('form[action*="/cart/add"]');
     if (!form) return;
 
-    // Champs utilisés par le thème
     const variantSelect = form.querySelector('select[name="id"]');
     const variantInput  = form.querySelector('input[name="id"]');
-    const qtyInput      = form.querySelector('input[name="quantity"]');
 
-    // Boutons
-    const addBtn = form.querySelector('button[name="add"], button[type="submit"]:not(.shopify-payment-button__button)');
-    const buyNowBtn = form.querySelector('.shopify-payment-button__button, .shopify-payment-button__button--unbranded');
+    function applyOptionsFromCard(card){
+      const desired = [card.dataset.o1, card.dataset.o2, card.dataset.o3].filter(Boolean);
 
-    let selectedVariantId =
-      (variantSelect && variantSelect.value) ||
-      (variantInput && variantInput.value) ||
-      "{{ product.selected_or_first_available_variant.id }}";
+      // 1) radios "options[1]" / "options[2]" / …
+      const radios = Array.from(form.querySelectorAll('input[type="radio"][name^="options["]'));
+      if (radios.length) {
+        // groupe par name et clique la bonne valeur
+        const groups = {};
+        radios.forEach(r => (groups[r.name] ||= []).push(r));
+        Object.values(groups).forEach((inputs, idx) => {
+          const want = desired[idx];
+          if (!want) return;
+          const target = inputs.find(i => i.value === want && !i.disabled);
+          if (target && !target.checked) target.click(); // laisse le thème gérer
+        });
+      }
 
-    // --- Sélection par cartes
+      // 2) selects "options[1]" / …
+      const selects = Array.from(form.querySelectorAll('select[name^="options["]'));
+      if (selects.length) {
+        selects.forEach((sel, idx) => {
+          const want = desired[idx];
+          if (!want) return;
+          if (sel.value !== want) {
+            sel.value = want;
+            sel.dispatchEvent(new Event('change', { bubbles: true }));
+            sel.dispatchEvent(new Event('input',  { bubbles: true }));
+          }
+        });
+      }
+    }
+
+    // Click carte => synchro options natives + UI locale
     const blocks = root.querySelectorAll(".custom-variant-selector__block");
     blocks.forEach((block) => {
       block.addEventListener("click", function () {
-        const variantId = this.getAttribute("data-variant-id");
-        if (!variantId) return;
-
         // UI locale
         blocks.forEach((b) => b.classList.remove("selected"));
         this.classList.add("selected");
         const radio = this.querySelector('input[type="radio"]');
         if (radio) radio.checked = true;
 
-        // Sync champ id natif si présent
-        selectedVariantId = String(variantId);
-        if (variantSelect && String(variantSelect.value) !== selectedVariantId) {
-          variantSelect.value = selectedVariantId;
-          variantSelect.dispatchEvent(new Event("change", { bubbles: true }));
-          variantSelect.dispatchEvent(new Event("input",  { bubbles: true }));
-        } else if (!variantSelect && variantInput) {
-          variantInput.value = selectedVariantId;
-          form.dispatchEvent(new Event("change", { bubbles: true }));
-          form.dispatchEvent(new Event("input",  { bubbles: true }));
-        }
+        // Aligne les options natives du thème
+        applyOptionsFromCard(this);
+
+        // Le thème déterminera la variante et mettra à jour select/input [name="id"]
+        // On n’empêche pas le submit ni on ne remplace le comportement ATC.
       });
     });
 
-    // Init visuel
-    (function initUI(){
-      const initialCard = root.querySelector('[data-variant-id="'+ String(selectedVariantId) +'"]');
-      if (initialCard) {
-        blocks.forEach((b) => b.classList.remove("selected"));
-        initialCard.classList.add("selected");
-        const r = initialCard.querySelector('input[type="radio"]');
-        if (r) r.checked = true;
-      }
-    })();
-
-    // --- Fallback robuste : forcer /cart/add.js pour le bouton "Ajouter au panier"
-    if (addBtn) {
-    addBtn.addEventListener('click', function (e) {
-      e.preventDefault();
-
-      // 1) S’assurer que name="id" porte bien la variante choisie
-      const vid =
-        (variantSelect && variantSelect.value) ||
-        (variantInput && variantInput.value) ||
-        selectedVariantId;
-
-      if (!vid) { console.warn('[cvs] Aucun variantId'); return; }
-
-      // si select existe, on le force pour que le form soit cohérent
-      if (variantSelect && String(variantSelect.value) !== String(vid)) {
-        variantSelect.value = String(vid);
-        variantSelect.dispatchEvent(new Event('change', { bubbles: true }));
-        variantSelect.dispatchEvent(new Event('input',  { bubbles: true }));
-      } else if (!variantSelect) {
-        // s'il n'y a pas de select, on s'assure d'avoir un input hidden name="id"
-        let idField = variantInput || form.querySelector('input[name="id"]');
-        if (!idField) {
-          idField = document.createElement('input');
-          idField.type = 'hidden';
-          idField.name = 'id';
-          form.appendChild(idField);
-        }
-        idField.value = String(vid);
-      }
-
-      // 2) Soumission AJAX du formulaire produit (embarque selling_plan, properties, qty, etc.)
-      const fd = new FormData(form);
-      // (certains thèmes utilisent un bouton qty séparé)
-      if (!fd.get('quantity')) {
-        const qty = form.querySelector('input[name="quantity"]');
-        if (qty) fd.set('quantity', qty.value || '1');
-      }
-
-      addBtn.disabled = true;
-      addBtn.setAttribute('aria-busy', 'true');
-
-      fetch((form.action || '/cart/add') + '.js', {
-        method: 'POST',
-        headers: { 'Accept': 'application/json' },
-        body: fd
-      })
-      .then(async (r) => {
-        if (!r.ok) {
-          const err = await r.json().catch(() => ({}));
-          throw new Error(err.description || ('Add to cart failed (' + r.status + ')'));
-        }
-        return r.json();
-      })
-      .then((data) => {
-        // Ouvre/rafraîchit le tiroir
-        document.dispatchEvent(new CustomEvent('cart:refresh', { detail: data }));
-        const drawerToggle = document.querySelector('[data-cart-drawer-toggle], [data-open-cart], .header__icon--cart');
-        if (drawerToggle) drawerToggle.click();
-        // Sinon, redirigez vers /cart si vous préférez :
-        // window.location.href = '/cart';
-      })
-      .catch((err) => {
-        console.error('[cvs] add via form failed:', err);
-        // Fallback ultime : soumettre le form normalement
-        form.submit();
-      })
-      .finally(() => {
-        addBtn.disabled = false;
-        addBtn.removeAttribute('aria-busy');
-      });
-    }, { capture: true }); // capture pour passer avant les handlers du thème
-  }
+    // Init UI locale selon l’état actuel
+    const currentId =
+      (variantSelect && variantSelect.value) ||
+      (variantInput && variantInput.value) ||
+      "{{ product.selected_or_first_available_variant.id }}";
+    const initialCard = root.querySelector('[data-variant-id="'+ String(currentId) +'"]');
+    if (initialCard) {
+      blocks.forEach((b) => b.classList.remove("selected"));
+      initialCard.classList.add("selected");
+      const r = initialCard.querySelector('input[type="radio"]');
+      if (r) r.checked = true;
+    }
+  });
 </script>
+
