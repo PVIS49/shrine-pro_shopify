@@ -18,7 +18,7 @@
           "type": "image",
           "settings": {
             "image": "shopify://shop_images/Logo_Parfum_Vaillant_51ac3a51-212d-4791-804d-ef48c0d224ee.webp",
-            "image_width": 100,
+            "image_width": 250,
             "alignment": "center",
             "url": "",
             "width_desktop": 4,
@@ -28,7 +28,7 @@
         "1c647602-cc00-4009-a058-976435c8ee9e": {
           "type": "link_list",
           "settings": {
-            "heading": "Quick links",
+            "heading": "Légale",
             "menu": "footer",
             "width_desktop": 4,
             "width_mobile": "1"
