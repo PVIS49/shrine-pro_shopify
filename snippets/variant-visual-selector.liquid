@@ -83,6 +83,8 @@
   background: transparent;
   box-shadow: none;
 }
+#pvv-{{ section.id }}-{{ block.id }} .pvv-card { cursor: pointer; position: relative; z-index: 1; }
+#pvv-{{ section.id }}-{{ block.id }} .pvv-radio { position: absolute; opacity: 0; pointer-events: none; }
 
 </style>
 
@@ -112,8 +114,25 @@
       root.querySelectorAll('.pvv-card').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.vid === String(id))));
     }
 
-    root.querySelectorAll('.pvv-radio').forEach(r => {
-      r.addEventListener('change', e => selectVariant(e.target.value));
+    // --- Listeners ---
+// 1) Cliquer n'importe où sur la carte sélectionne la variante
+root.querySelectorAll('.pvv-card').forEach(card => {
+  const radio = card.querySelector('.pvv-radio');
+  if (!radio || radio.disabled) return;
+
+  card.addEventListener('click', (e) => {
+    e.preventDefault();
+    radio.checked = true;
+    selectVariant(card.dataset.vid);
+  });
+});
+
+// 2) Fallback : si la radio change, on suit
+root.querySelectorAll('.pvv-radio').forEach(r => {
+  if (r.disabled) return;
+  r.addEventListener('change', e => selectVariant(e.target.value));
+});
+
     });
 
     // init
