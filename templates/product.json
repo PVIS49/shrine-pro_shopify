@@ -681,13 +681,21 @@
             "question": "Quelle contenance de Parfum Vaillant devrais-je choisir ?",
             "answer": "<p>Le flacon de 50 ml est idéal pour un usage quotidien pendant environ 5 à 6 mois. Le format 100 ml, quant à lui, vous offre une autonomie d’environ un an. À vous de choisir selon votre fréquence d’utilisation et vos habitudes.</p>"
           }
+        },
+        "text_KV7HKH": {
+          "type": "text",
+          "settings": {
+            "question": "Puis-je demander un remboursement ?",
+            "answer": "<p>Oui. Vous disposez de 14 jours à compter de la réception de votre commande pour demander un retour ou un remboursement, conformément à notre politique de retours.</p>"
+          }
         }
       },
       "block_order": [
         "text_3bwra7",
         "text_UTHbyU",
         "text_9TFRbK",
-        "text_XCCf7j"
+        "text_XCCf7j",
+        "text_KV7HKH"
       ],
       "name": "Faq",
       "settings": {
