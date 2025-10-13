@@ -138,120 +138,81 @@
 <script>
 (() => {
   document.addEventListener('DOMContentLoaded', () => {
-    const root = document.getElementById("cvs-{{ section.id }}-{{ block.id }}")
-              || document.querySelector('.custom-variant-selector');
+    const root = document.getElementById("cvs-{{ section.id }}-{{ block.id }}") 
+              || document.querySelector(".custom-variant-selector");
     if (!root) return;
+
+    // ⬇️ FORÇAGE: mets ICI les IDs de sections à rafraîchir (ton drawer + le header)
+    const FORCE_SECTION_IDS = ['cart-drawer','header'];
 
     const VARIANTS  = {{ product.variants | json }};
     const OPTS_CNT  = {{ product.options | size }};
     const sectionId = "{{ section.id }}";
 
-    // Eléments du thème (vus dans main-product.liquid)
-    const stickyBtn = document.getElementById(`SectionAtcBtn-${sectionId}`); // bouton sticky (type="button") :contentReference[oaicite:2]{index=2}
-    const productForm = document.getElementById(`product-form-${sectionId}`); // form rendu par 'buy-buttons' (dans le snippet) :contentReference[oaicite:3]{index=3}
-    const qtyInput = document.getElementById(`Quantity-${sectionId}`) || (productForm ? productForm.querySelector('input[name="quantity"]') : null);
+    // Boutons / Form de la section produit
+    const stickyBtn   = document.getElementById(`SectionAtcBtn-${sectionId}`); // sticky ATC (type="button")
+    const productForm = document.getElementById(`product-form-${sectionId}`);  // form principal si présent
+    const qtyInput    = document.getElementById(`Quantity-${sectionId}`) || (productForm ? productForm.querySelector('input[name="quantity"]') : null);
 
     const cards = Array.from(root.querySelectorAll('.custom-variant-selector__block'));
     if (!cards.length) return;
 
-    // --- Helpers variants
+    // Helpers variantes
     const byId = id => VARIANTS.find(v => String(v.id) === String(id));
-    const byOptions = (o1,o2,o3) => VARIANTS.find(v => {
-      const o = v.options;
-      return (o[0]==o1) && (OPTS_CNT<2 || o[1]==o2) && (OPTS_CNT<3 || o[2]==o3);
-    });
+    const byOpts = (o1,o2,o3) => VARIANTS.find(v => { const o=v.options; return (o[0]==o1) && (OPTS_CNT<2||o[1]==o2) && (OPTS_CNT<3||o[2]==o3); });
+    const selCard = () => root.querySelector('.custom-variant-selector__block.selected') || cards[0] || null;
+    const selVariant = () => { const c=selCard(); return c ? (byOpts(c.dataset.o1,c.dataset.o2,c.dataset.o3) || (c.dataset.variantId?byId(c.dataset.variantId):null)) : null; };
+    const getQty = () => { const n = qtyInput ? parseInt(qtyInput.value,10) : 1; return (isNaN(n)||n<=0) ? 1 : n; };
 
-    const getSelectedCard = () => root.querySelector('.custom-variant-selector__block.selected') || cards[0] || null;
-    const getSelectedVariant = () => {
-      const c = getSelectedCard(); if (!c) return null;
-      return byOptions(c.dataset.o1, c.dataset.o2, c.dataset.o3) || (c.dataset.variantId ? byId(c.dataset.variantId) : null);
-    };
-    const getQty = () => {
-      const n = qtyInput ? parseInt(qtyInput.value,10) : 1;
-      return (isNaN(n)||n<=0) ? 1 : n;
-    };
-
-    // --- Sync du champ name="id" du vrai form (snippet buy-buttons)
     function ensureFormHasVariant(variantId){
       if (!productForm) return;
-      // 1) <select name="id"> prioritaire si présent
       const sel = productForm.querySelector('select[name="id"]');
-      if (sel) {
-        if (String(sel.value) !== String(variantId)){
-          sel.value = String(variantId);
-          sel.dispatchEvent(new Event('input',{bubbles:true}));
-          sel.dispatchEvent(new Event('change',{bubbles:true}));
-        }
-        return;
-      }
-      // 2) input hidden name="id"
+      if (sel){ if (String(sel.value)!==String(variantId)){ sel.value=String(variantId); sel.dispatchEvent(new Event('change',{bubbles:true})); } return; }
       let hid = productForm.querySelector('input[name="id"]');
-      if (!hid) {
-        hid = document.createElement('input');
-        hid.type = 'hidden'; hid.name = 'id';
-        productForm.appendChild(hid);
-      }
-      if (String(hid.value) !== String(variantId)){
-        hid.value = String(variantId);
-        productForm.dispatchEvent(new Event('input',{bubbles:true}));
-        productForm.dispatchEvent(new Event('change',{bubbles:true}));
-      }
+      if (!hid){ hid = document.createElement('input'); hid.type='hidden'; hid.name='id'; productForm.appendChild(hid); }
+      if (String(hid.value)!==String(variantId)){ hid.value=String(variantId); productForm.dispatchEvent(new Event('change',{bubbles:true})); }
     }
 
-    // --- Click cartes: sélection + sync form
+    // Sélection visuelle des cartes + sync form
     cards.forEach(card=>{
       card.addEventListener('click', () => {
         cards.forEach(b=>b.classList.remove('selected'));
         card.classList.add('selected');
-        const r=card.querySelector('input[type="radio"]'); if (r) r.checked = true;
-
-        const v = getSelectedVariant();
-        if (v) ensureFormHasVariant(v.id);
+        const r=card.querySelector('input[type="radio"]'); if (r) r.checked=true;
+        const v = selVariant(); if (v) ensureFormHasVariant(v.id);
       });
     });
-
-    // --- Init visuelle
-    (function init(){
-      // essaie d’aligner sur l’ID du form si déjà défini
+    // Init
+    (function(){
       let currentId = null;
       const idField = productForm && (productForm.querySelector('select[name="id"], input[name="id"]'));
       if (idField) currentId = idField.value;
       if (!currentId) currentId = "{{ product.selected_or_first_available_variant.id }}";
-
       const initial = cards.find(b => String(b.dataset.variantId)===String(currentId)) || cards[0];
-      if (initial){
-        cards.forEach(b=>b.classList.remove('selected'));
-        initial.classList.add('selected');
-        const r=initial.querySelector('input[type="radio"]'); if (r) r.checked = true;
-        const v = getSelectedVariant(); if (v) ensureFormHasVariant(v.id);
-      }
+      if (initial){ cards.forEach(b=>b.classList.remove('selected')); initial.classList.add('selected'); const r=initial.querySelector('input[type="radio"]'); if (r) r.checked=true; const v=selVariant(); if (v) ensureFormHasVariant(v.id); }
     })();
 
-    // --- Section Rendering (drawer + bubble)
-    const SECTION_KEYS = ['cart-drawer','cart-icon-bubble','cart-notification','header','main-cart-items','cart-items'];
-    const sectionsParam = encodeURIComponent(SECTION_KEYS.join(','));
+    // --- Rafraîchissement des SECTIONS (IDs forcés) ---
+    const sectionsParam = encodeURIComponent(FORCE_SECTION_IDS.join(','));
     const sectionsUrl   = encodeURIComponent(window.location.pathname);
 
-    function replaceSectionsFromResponse(map){
+    function replaceSections(map){
       if (!map) return false;
-      let replaced = false;
-      Object.keys(map).forEach(k=>{
-        const html = map[k]; if (!html) return;
+      let ok=false;
+      FORCE_SECTION_IDS.forEach(id=>{
+        const html = map[id]; if (!html) return;
         const tmp = document.createElement('div'); tmp.innerHTML = html.trim();
-        const repl = tmp.querySelector('[data-section-id]') || tmp.firstElementChild;
-        if (!repl) return;
-        const sid = repl.getAttribute('data-section-id');
-        const current = sid && document.querySelector(`[data-section-id="${sid}"]`);
-        if (current){ current.replaceWith(repl); replaced = true; }
+        // cherche le noeud racine portant data-section-id=id, sinon remplace le premier enfant
+        const repl = tmp.querySelector(`[data-section-id="${id}"]`) || tmp.firstElementChild;
+        const current = document.querySelector(`[data-section-id="${id}"]`);
+        if (repl && current){ current.replaceWith(repl); ok=true; }
       });
-      return replaced;
+      return ok;
     }
 
     function openDrawer(){
-      // Dawn-like web component
       const drawer = document.querySelector('cart-drawer, #CartDrawer');
-      if (drawer && typeof drawer.open === 'function') { try{ drawer.open(); }catch(e){} }
-      // Fallbacks fréquents
+      if (drawer && typeof drawer.open === 'function'){ try{ drawer.open(); }catch(e){} }
       document.dispatchEvent(new CustomEvent('cart:open',{detail:{source:'cvs'}}));
       document.body.classList.add('cart-open','drawer--cart-open');
       const opener = document.querySelector('[data-cart-drawer-open], [data-action="open-cart"], .js-openCartDrawer, .header__icon--cart, .cart-toggle, .open-cart, #CartDrawer-Open');
@@ -259,91 +220,56 @@
     }
 
     async function addToCartAjax(variantId, qty){
-      const fd = new FormData();
-      fd.set('id', variantId);
-      fd.set('quantity', qty);
-
-      const res = await fetch(`/cart/add.js?sections=${sectionsParam}&sections_url=${sectionsUrl}`, {
-        method:'POST', body:fd, headers:{'Accept':'application/json'}
-      });
+      const fd = new FormData(); fd.set('id', variantId); fd.set('quantity', qty);
+      const res = await fetch(`/cart/add.js?sections=${sectionsParam}&sections_url=${sectionsUrl}`, { method:'POST', body:fd, headers:{'Accept':'application/json'} });
       if (!res.ok) throw new Error('add.js failed');
       const json = await res.json();
-
-      // 1) Si cart-drawer supporte renderContents(json)
-      const drawer = document.querySelector('cart-drawer, #CartDrawer');
-      if (drawer && typeof drawer.renderContents === 'function'){
-        try{ drawer.renderContents(json); }catch(e){}
-      }
-
-      // 2) Remplacement direct des sections
-      const map = json.sections || json;
-      const swapped = replaceSectionsFromResponse(map);
-
-      // 3) Bulle compteur en dernier recours
-      if (!swapped){
-        try{
-          const c = await (await fetch('/cart.js', {headers:{'Accept':'application/json'}})).json();
-          const cnt = Array.isArray(c.items) ? c.items.reduce((s,i)=>s+i.quantity,0) : 0;
-          const bubble = document.querySelector('.cart-count-bubble, [data-cart-count-bubble]');
-          if (bubble){
-            const span = bubble.querySelector('span') || bubble;
-            span.textContent = String(cnt);
-            bubble.classList.toggle('hidden', cnt<=0);
-          }
-        }catch(e){}
-      }
-
-      // 4) Open + events
-      openDrawer();
+      const map  = json.sections || json;
+      // remplace nos sections forçées
+      replaceSections(map);
+      // signaux + ouverture
       document.dispatchEvent(new CustomEvent('cart:refresh',{detail:{source:'cvs'}}));
       document.dispatchEvent(new CustomEvent('cart:updated',{detail:{source:'cvs'}}));
       document.dispatchEvent(new CustomEvent('product:added',{detail:{source:'cvs', id:variantId, qty}}));
+      openDrawer();
     }
 
-    // --- Hook STICKY ATC (type="button")
+    function setBusy(btn, on){
+      if (!btn) return;
+      btn.classList.toggle('is-loading', !!on);
+      btn.disabled = !!on;
+      btn.setAttribute('aria-disabled', String(!!on));
+    }
+
+    // Sticky ATC (type="button")
     if (stickyBtn){
-      let busy = false;
+      let busy=false;
       stickyBtn.addEventListener('click', async (e)=>{
         e.preventDefault();
         if (busy) return;
-        const v = getSelectedVariant();
-        if (!v || !v.available) return;
+        const v = selVariant(); if (!v || !v.available) return;
         ensureFormHasVariant(v.id);
-        busy = true; stickyBtn.classList.add('is-loading'); stickyBtn.setAttribute('aria-disabled','true');
-        try{
-          await addToCartAjax(v.id, getQty());
-        }catch(err){
-          console.warn('[CVS] sticky add error', err);
-        }finally{
-          stickyBtn.classList.remove('is-loading'); stickyBtn.removeAttribute('aria-disabled'); busy=false;
-        }
+        busy=true; setBusy(stickyBtn, true);
+        try{ await addToCartAjax(v.id, getQty()); } catch(e){ console.warn(e); }
+        finally{ setBusy(stickyBtn, false); busy=false; }
       });
     }
 
-    // --- Hook FORM principal (si le snippet buy-buttons rend un form classique)
+    // Form principal (si existant)
     if (productForm){
-      let inflight = false;
       productForm.addEventListener('submit', async (e)=>{
-        // On prend la main pour garantir le refresh du drawer
         e.preventDefault();
-        if (inflight) return;
-        const v = getSelectedVariant();
-        if (!v || !v.available) return;
-        ensureFormHasVariant(v.id);
-        inflight = true;
-        // état visuel sur le submit principal s'il existe
         const submit = productForm.querySelector('button[name="add"], button[type="submit"]:not(.shopify-payment-button__button)');
-        if (submit){ submit.classList.add('is-loading'); submit.setAttribute('aria-disabled','true'); }
-        try{
-          await addToCartAjax(v.id, getQty());
-        }catch(err){
-          console.warn('[CVS] form add error', err);
-        }finally{
-          if (submit){ submit.classList.remove('is-loading'); submit.removeAttribute('aria-disabled'); }
-          inflight = false;
-        }
+        const v = selVariant(); if (!v || !v.available) return;
+        ensureFormHasVariant(v.id);
+        setBusy(submit, true);
+        try{ await addToCartAjax(v.id, getQty()); } catch(e){ console.warn(e); }
+        finally{ setBusy(submit, false); }
       }, true);
     }
+
+    // Style léger
+    const s=document.createElement('style'); s.textContent=`.is-loading{opacity:.7;pointer-events:none;position:relative;}`; document.head.appendChild(s);
   });
 })();
 </script>
