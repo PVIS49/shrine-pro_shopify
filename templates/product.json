@@ -664,7 +664,7 @@
         "text_UTHbyU": {
           "type": "text",
           "settings": {
-            "question": "Question text",
+            "question": "Est-ce que Parfum Vaillant tient toute la journée ?",
             "answer": "<p>Oui. Parfum Vaillant est une eau de parfum qui assure une tenue longue durée. Une application suffit pour vous accompagner du matin jusqu’au soir.</p>"
           }
         }
