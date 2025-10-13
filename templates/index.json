@@ -149,7 +149,7 @@
           "type": "quote",
           "settings": {
             "logo": "shopify://shop_images/elle_300xlogo.png",
-            "logo_width": 120,
+            "logo_width": 140,
             "author": "",
             "content": "LE parfum du moment, nous avons reçu des dizaines et des dizaines de messages à propos de ce parfum",
             "show_rating": false,
@@ -159,10 +159,11 @@
         "quote_PhKjGy": {
           "type": "quote",
           "settings": {
-            "logo_width": 120,
+            "logo": "shopify://shop_images/grazia_300xlogo.png",
+            "logo_width": 140,
             "author": "",
-            "content": "Write some content about what they say about your store.",
-            "show_rating": true,
+            "content": "Une odeur vraiment unique qui ne laisse personne indifférent",
+            "show_rating": false,
             "rating": 5
           }
         },
