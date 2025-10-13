@@ -22,6 +22,12 @@
             "margin_bottom": 0
           }
         },
+        "custom_liquid_VzJmFG": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": ""
+          }
+        },
         "custom_liquid_BEpXah": {
           "type": "custom_liquid",
           "settings": {
@@ -282,6 +288,7 @@
       },
       "block_order": [
         "title",
+        "custom_liquid_VzJmFG",
         "custom_liquid_BEpXah",
         "a6eb81db-40e4-43e0-972f-32db010a4a56",
         "price",
