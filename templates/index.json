@@ -219,8 +219,9 @@
           "settings": {
             "icon": "check_circle",
             "filled_icon": false,
-            "title": "Icon",
-            "text": "<p>Pair text with an icon to focus on your chosen product, collection, or blog post<p>"
+            "image": "shopify://shop_images/shield_locked_24dp_1A1A1A_FILL0_wght400_GRAD0_opsz24.svg",
+            "title": "Paiements sécurisés",
+            "text": ""
           }
         }
       },
