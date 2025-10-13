@@ -681,6 +681,9 @@
                 sizing_chart_html: sizing_chart_html,
                 has_filtering: has_filtering
               %}
+              {%- when 'custom_variant_selector' -%}
+  {% render 'custom-variant-selector', product: product, section: section, block: block %}
+
             {%- when 'buy_buttons' -%}
               {%- render 'buy-buttons', block: block, product: product, product_form_id: product_form_id, section_id: section.id, show_pickup_availability: true, main_product: true -%}
             {%- when 'reviews' -%}
