@@ -614,12 +614,14 @@
         "slide_haF8nM": {
           "type": "slide",
           "settings": {
+            "image": "shopify://shop_images/note_olfactive_cuir.webp",
+            "mobile_image": "shopify://shop_images/note_olfactive_cuir.webp",
             "image_overlay_opacity": 0,
-            "heading": "Image slide",
+            "heading": "Cuir",
             "title_highlight_color": "#6d388b",
             "heading_size": "h1",
-            "subheading": "Tell your brand's story through images",
-            "button_label": "Button label",
+            "subheading": "Le cuir apporte une note chaude, épicée et légèrement fumée. Il renvoie à une sensation de force, de confiance et d’élégance affirmée, donnant à Parfum Vaillant un caractère à la fois sophistiqué et audacieux",
+            "button_label": "",
             "link": "",
             "button_style_secondary": false,
             "atc_button_label": "",
