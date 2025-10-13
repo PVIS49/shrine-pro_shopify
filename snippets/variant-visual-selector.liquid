@@ -4,7 +4,7 @@
     {%- assign current = product.selected_or_first_available_variant -%}
     {%- for v in product.variants -%}
       <label class="pvv-card" data-vid="{{ v.id }}" aria-pressed="{{ v.id == current.id }}">
-        <input class="pvv-radio" type="radio" name="pvv" value="{{ v.id }}"
+        <input class="pvv-radio" type="radio" name="pvv-{{ block.id }}" value="{{ v.id }}"
                {% if v.id == current.id %}checked{% endif %}
                {% unless v.available %}disabled{% endunless %}>
         <span class="pvv-dot" aria-hidden="true"></span>
@@ -49,9 +49,10 @@
   }
   #pvv-{{ section.id }}-{{ block.id }} .pvv-card:hover{ background:var(--pv-bg); }
   #pvv-{{ section.id }}-{{ block.id }} .pvv-card[aria-pressed="true"]{
-    border-color:var(--pv-selected); box-shadow:0 0 0 2px color-mix(in srgb, var(--pv-selected) 18%, transparent);
+    border-color:var(--pv-selected); box-shadow:0 0 0 2px rgba(41,72,105,.18);
   }
-  #pvv-{{ section.id }}-{{ block.id }} .pvv-card:has(.pvv-radio:disabled){ opacity:.45; cursor:not-allowed; }
+  #pvv-{{ section.id }}-{{ block.id }} .pvv-card[aria-disabled="true"],
+  #pvv-{{ section.id }}-{{ block.id }} .pvv-radio:disabled ~ *{ opacity:.45; cursor:not-allowed; }
 
   #pvv-{{ section.id }}-{{ block.id }} .pvv-dot{
     position:absolute; top:10px; right:10px; width:18px; height:18px; border-radius:999px; border:2px solid #111; background:#fff; display:grid; place-items:center;
@@ -72,14 +73,24 @@
     const root = document.getElementById('pvv-{{ section.id }}-{{ block.id }}');
     if(!root) return;
 
-    const form = root.closest('section')?.querySelector('form[action*="/cart/add"]') ||
-                 document.querySelector('form[action*="/cart/add"]');
-    const select = form?.querySelector('select[name="id"]') || form?.querySelector('input[name="id"]');
+    // Shrine Pro : tente d'abord l'id standard product-form-{{ section.id }}
+    const form = document.getElementById('product-form-{{ section.id }}')
+             || root.closest('section')?.querySelector('form[action*="/cart/add"]')
+             || document.querySelector('form[action*="/cart/add"]');
+
+    if(!form){ console.warn('[pvv] Form produit introuvable'); return; }
+
+    const select = form.querySelector('select[name="id"]') || form.querySelector('input[name="id"]');
+    if(!select){ console.warn('[pvv] Champ variante introuvable'); return; }
 
     function selectVariant(id){
-      if(!form || !select) return;
-      if(select.tagName === 'SELECT'){ select.value = String(id); select.dispatchEvent(new Event('change',{bubbles:true})); }
-      else { select.value = String(id); form.dispatchEvent(new Event('change',{bubbles:true})); }
+      if(select.tagName === 'SELECT'){
+        select.value = String(id);
+        select.dispatchEvent(new Event('change',{bubbles:true}));
+      } else {
+        select.value = String(id);
+        form.dispatchEvent(new Event('change',{bubbles:true}));
+      }
       root.querySelectorAll('.pvv-card').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.vid === String(id))));
     }
 
@@ -87,7 +98,7 @@
       r.addEventListener('change', e => selectVariant(e.target.value));
     });
 
-    // init sur la variante sélectionnée
+    // init
     const current = (select && ('value' in select)) ? select.value : '{{ product.selected_or_first_available_variant.id }}';
     selectVariant(current);
   })();
