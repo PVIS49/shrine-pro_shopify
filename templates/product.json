@@ -550,11 +550,100 @@
             "custom_colors_solid_button_text": "#ffffff",
             "custom_colors_outline_button": "#dd1d1d"
           }
+        },
+        "slide_THRr7P": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/note_olfactive_vetiver_318d6a9c-a379-4ff5-9b25-dc6314dce92c.webp",
+            "mobile_image": "shopify://shop_images/note_olfactive_vetiver_318d6a9c-a379-4ff5-9b25-dc6314dce92c.webp",
+            "image_overlay_opacity": 0,
+            "heading": "Secret de Parfum Vaillant",
+            "title_highlight_color": "#6d388b",
+            "heading_size": "h1",
+            "subheading": "Notre composition secrète et unique associe des notes intenses et envoûtantes, pensées pour éveiller le désir dès les premiers instants. Chaque pulvérisation révèle une alliance subtile qui laisse une impression marquante, entre séduction, caractère et profondeur",
+            "button_label": "",
+            "link": "",
+            "button_style_secondary": false,
+            "atc_button_label": "",
+            "atc_product": "",
+            "atc_skip_cart": false,
+            "box_align": "middle-center",
+            "show_text_box": true,
+            "text_alignment": "center",
+            "color_scheme": "background-1",
+            "transparent_container_color": "white",
+            "text_alignment_mobile": "center",
+            "custom_colors_background": "#ffffff",
+            "custom_gradient_background": "",
+            "custom_colors_text": "#2e2a39",
+            "custom_colors_solid_button_background": "#dd1d1d",
+            "custom_colors_solid_button_text": "#ffffff",
+            "custom_colors_outline_button": "#dd1d1d"
+          }
+        },
+        "slide_yQGGeY": {
+          "type": "slide",
+          "settings": {
+            "image_overlay_opacity": 0,
+            "heading": "Image slide",
+            "title_highlight_color": "#6d388b",
+            "heading_size": "h1",
+            "subheading": "Tell your brand's story through images",
+            "button_label": "Button label",
+            "link": "",
+            "button_style_secondary": false,
+            "atc_button_label": "",
+            "atc_product": "",
+            "atc_skip_cart": false,
+            "box_align": "middle-center",
+            "show_text_box": true,
+            "text_alignment": "center",
+            "color_scheme": "background-1",
+            "transparent_container_color": "white",
+            "text_alignment_mobile": "center",
+            "custom_colors_background": "#ffffff",
+            "custom_gradient_background": "",
+            "custom_colors_text": "#2e2a39",
+            "custom_colors_solid_button_background": "#dd1d1d",
+            "custom_colors_solid_button_text": "#ffffff",
+            "custom_colors_outline_button": "#dd1d1d"
+          }
+        },
+        "slide_haF8nM": {
+          "type": "slide",
+          "settings": {
+            "image_overlay_opacity": 0,
+            "heading": "Image slide",
+            "title_highlight_color": "#6d388b",
+            "heading_size": "h1",
+            "subheading": "Tell your brand's story through images",
+            "button_label": "Button label",
+            "link": "",
+            "button_style_secondary": false,
+            "atc_button_label": "",
+            "atc_product": "",
+            "atc_skip_cart": false,
+            "box_align": "middle-center",
+            "show_text_box": true,
+            "text_alignment": "center",
+            "color_scheme": "background-1",
+            "transparent_container_color": "white",
+            "text_alignment_mobile": "center",
+            "custom_colors_background": "#ffffff",
+            "custom_gradient_background": "",
+            "custom_colors_text": "#2e2a39",
+            "custom_colors_solid_button_background": "#dd1d1d",
+            "custom_colors_solid_button_text": "#ffffff",
+            "custom_colors_outline_button": "#dd1d1d"
+          }
         }
       },
       "block_order": [
         "slide_yefjYd",
-        "slide_D3Bced"
+        "slide_D3Bced",
+        "slide_THRr7P",
+        "slide_yQGGeY",
+        "slide_haF8nM"
       ],
       "name": "t:sections.slideshow.presets.name",
       "settings": {
@@ -564,7 +653,7 @@
         "slider_visual": "dots",
         "desktop_pagination_position": "over",
         "auto_rotate": true,
-        "change_slides_speed": 5,
+        "change_slides_speed": 3,
         "show_text_below": true,
         "mobile_pagination_position": "under",
         "accessibility_info": "Slideshow about our brand"
