@@ -200,8 +200,8 @@
             "icon": "check_circle",
             "filled_icon": false,
             "image": "shopify://shop_images/Retour_facile.png",
-            "title": "Icon",
-            "text": "<p>Pair text with an icon to focus on your chosen product, collection, or blog post</p><p></p>"
+            "title": "Satisfait ou remboursé",
+            "text": "<p></p><p></p>"
           }
         },
         "column_rxwbAR": {
@@ -259,7 +259,7 @@
         "desktop_dots_position": "under",
         "desktop_arrows_position": "sides",
         "columns_mobile": "1",
-        "slider_mobile": true,
+        "slider_mobile": false,
         "enable_mobile_preview": false,
         "mobile_adaptive_height": false,
         "mobile_dots_position": "under",
