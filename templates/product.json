@@ -301,6 +301,38 @@
             "margin_top": 24,
             "margin_bottom": 0
           }
+        },
+        "collapsible_tab_K9zbJj": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Ingrédients",
+            "heading_size": "medium",
+            "icon": "check_box",
+            "filled_icon": false,
+            "collapse_icon": "carret",
+            "display_top_border": true,
+            "open": false,
+            "content": "<p>Alcohol Denat., Eau (Water), Parfum (Fragrance), D-Limonene*<br/><br/>*D-Limonene : dérivé naturellement des agrumes, il remplace les solvants synthétiques pour garantir l’harmonie et la stabilité de la composition exclusive de Vaillant.</p><p>Vaillant est un parfum audacieux, où le bois de Oud et le musc s’unissent à des accents cuirés et au caractère affirmé du vétiver. Un sillage puissant, qui ne passe jamais inaperçu.</p><p>Sans BPA ni perturbateurs endocriniens, sa formule a été pensée pour respecter votre peau… et votre équilibre.</p>",
+            "page": "",
+            "margin_top": 24,
+            "margin_bottom": 0
+          }
+        },
+        "collapsible_tab_zzPNwR": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Collapsible row",
+            "heading_size": "medium",
+            "icon": "check_box",
+            "filled_icon": false,
+            "collapse_icon": "carret",
+            "display_top_border": true,
+            "open": false,
+            "content": "",
+            "page": "",
+            "margin_top": 24,
+            "margin_bottom": 0
+          }
         }
       },
       "block_order": [
@@ -318,7 +350,9 @@
         "e7a28cbe-03cb-4c9d-a2c4-0e3e76ffb3e5",
         "description",
         "reviews_8UgFbe",
-        "de158e68-5d0d-4819-a625-e2dabdff87d1"
+        "de158e68-5d0d-4819-a625-e2dabdff87d1",
+        "collapsible_tab_K9zbJj",
+        "collapsible_tab_zzPNwR"
       ],
       "custom_css": [],
       "settings": {
