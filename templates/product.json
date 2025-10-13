@@ -680,9 +680,10 @@
         "column_g9YWtc": {
           "type": "column",
           "settings": {
+            "image": "shopify://shop_images/note_olfactive_musc_1.webp",
             "muted_autoplay": true,
-            "title": "Column",
-            "text": "<p>Pair text with an image/video to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+            "title": "Musc",
+            "text": "<p>Le musc apporte une odeur chaude et enveloppante, à la fois sensuelle et légèrement animale. Il renforce la dimension intime de Parfum Vaillant, en créant une impression de proximité et d’attirance naturelle, presque instinctive</p>",
             "link_label": "",
             "link": ""
           }
