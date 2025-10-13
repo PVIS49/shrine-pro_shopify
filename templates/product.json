@@ -488,6 +488,69 @@
         "custom_section_gradient_background": ""
       }
     },
+    "results_nWke9k": {
+      "type": "results",
+      "blocks": {
+        "row_T6mWnK": {
+          "type": "row",
+          "settings": {
+            "percentage": 96,
+            "row_text": "<p>reçoivent des compliments sur leur parfums quotidiennement</p>"
+          }
+        },
+        "row_iqmQr7": {
+          "type": "row",
+          "settings": {
+            "percentage": 88,
+            "row_text": "<p>ressentent une différence auprès des femmes</p>"
+          }
+        },
+        "row_6atmQm": {
+          "type": "row",
+          "settings": {
+            "percentage": 78,
+            "row_text": "<p>ont conclu un date en portant le parfum</p>"
+          }
+        }
+      },
+      "block_order": [
+        "row_T6mWnK",
+        "row_iqmQr7",
+        "row_6atmQm"
+      ],
+      "name": "Results",
+      "settings": {
+        "display_id": false,
+        "visibility": "always-display",
+        "title": "<strong>Résultats obtenus par nos clients</strong>",
+        "title_highlight_color": "#1c2433",
+        "heading_size": "h1",
+        "text": "",
+        "color_scheme": "background-1",
+        "layout": "results_second",
+        "results_headline": "",
+        "results_title_highlight_color": "#6D388B",
+        "results_headline_size": "h2",
+        "results_text": "",
+        "results_headline_alignment": "left",
+        "caption": "",
+        "button_label": "",
+        "link": "",
+        "button_style_secondary": false,
+        "atc_button_label": "",
+        "atc_product": "",
+        "atc_skip_cart": false,
+        "padding_top": 36,
+        "padding_bottom": 36,
+        "custom_colors_background": "#FFFFFF",
+        "custom_gradient_background": "",
+        "custom_colors_text": "#1c2433",
+        "custom_colors_accent": "#dd1d1d",
+        "custom_colors_solid_button_background": "#dd1d1d",
+        "custom_colors_solid_button_text": "#ffffff",
+        "custom_colors_outline_button": "#dd1d1d"
+      }
+    },
     "related-products": {
       "type": "related-products",
       "disabled": true,
@@ -608,6 +671,7 @@
     "main",
     "rich_text_3xDhQz",
     "image_with_text_TtxikA",
+    "results_nWke9k",
     "related-products",
     "55bd100e-3bbd-426c-a5cf-eed7b2a3706f",
     "b321ab88-2b59-4dba-bade-54885c874ca5"
