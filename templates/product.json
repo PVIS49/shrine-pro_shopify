@@ -554,8 +554,8 @@
         "slide_THRr7P": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/note_olfactive_vetiver_318d6a9c-a379-4ff5-9b25-dc6314dce92c.webp",
-            "mobile_image": "shopify://shop_images/note_olfactive_vetiver_318d6a9c-a379-4ff5-9b25-dc6314dce92c.webp",
+            "image": "shopify://shop_images/note_olfactive_secrete_de_parfum_vaillant.webp",
+            "mobile_image": "shopify://shop_images/note_olfactive_secrete_de_parfum_vaillant.webp",
             "image_overlay_opacity": 0,
             "heading": "Secret de Parfum Vaillant",
             "title_highlight_color": "#6d388b",
@@ -584,12 +584,14 @@
         "slide_yQGGeY": {
           "type": "slide",
           "settings": {
+            "image": "shopify://shop_images/note_olfactive_vetiver_318d6a9c-a379-4ff5-9b25-dc6314dce92c.webp",
+            "mobile_image": "shopify://shop_images/note_olfactive_vetiver_318d6a9c-a379-4ff5-9b25-dc6314dce92c.webp",
             "image_overlay_opacity": 0,
-            "heading": "Image slide",
+            "heading": "Vétiver",
             "title_highlight_color": "#6d388b",
             "heading_size": "h1",
-            "subheading": "Tell your brand's story through images",
-            "button_label": "Button label",
+            "subheading": "Le vétiver révèle une force calme et magnétique. Sa senteur boisée, fraîche et légèrement fumée insuffle au parfum Désir une signature virile, ancrée, presque instinctive, celle d’une nature brute et sophistiquée à la fois.",
+            "button_label": "",
             "link": "",
             "button_style_secondary": false,
             "atc_button_label": "",
