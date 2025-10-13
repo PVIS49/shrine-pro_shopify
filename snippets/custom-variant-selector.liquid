@@ -142,232 +142,130 @@
               || document.querySelector(".custom-variant-selector");
     if (!root) return;
 
-    const VARIANTS = {{ product.variants | json }};
-    const OPT_COUNT = {{ product.options | size }};
+    const VARIANTS   = {{ product.variants | json }};
+    const OPT_COUNT  = {{ product.options | size }};
+    const sectionEl  = root.closest('section') || document;
 
-    // --- Trouve le bouton ATC et SON form ---
-    const addBtn = root.closest('section')?.querySelector('button[name="add"], button[type="submit"]:not(.shopify-payment-button__button)') 
-                || document.querySelector('button[name="add"], button[type="submit"]:not(.shopify-payment-button__button)');
+    const addBtn = sectionEl.querySelector('button[name="add"], button[type="submit"]:not(.shopify-payment-button__button)');
     if (!addBtn) return;
-    const form = addBtn.closest('form');
-    if (!form) return;
 
-    // Sélecteurs plausibles d’ouverture de tiroir (élargis pour Shrine-like)
-    const OPENERS = [
-      '[data-cart-drawer-open]', '[data-action="open-cart"]', '.js-openCartDrawer',
-      'button.header__cart-button', '.header__icon--cart', '.site-header__cart',
-      '.cart-toggle', '.open-cart', '#CartDrawer-Open'
-    ];
-    const DRAWER_OPEN = [
-      '[data-cart-drawer].is-open', '.cart-drawer.is-open', '.js-cartDrawer.is-open',
-      'body.cart-open', 'body.drawer--cart-open'
-    ];
+    const form = addBtn.closest('form') || sectionEl.querySelector('form[action*="/cart/add"]');
 
+    // Helpers
     const blocks = Array.from(root.querySelectorAll('.custom-variant-selector__block'));
 
-    function byId(id){ return VARIANTS.find(v => String(v.id) === String(id)); }
     function byOptions(o1,o2,o3){
-      return VARIANTS.find(v => {
-        const o = v.options;
-        return (o[0] == o1) && (OPT_COUNT < 2 || o[1] == o2) && (OPT_COUNT < 3 || o[2] == o3);
+      return VARIANTS.find(v=>{
+        const o=v.options;
+        return (o[0]==o1) && (OPT_COUNT<2 || o[1]==o2) && (OPT_COUNT<3 || o[2]==o3);
       });
     }
+    function byId(id){ return VARIANTS.find(v=>String(v.id)===String(id)); }
 
-    function setNativeOption(i, val){
-      // radios options[i]
-      const radios = form.querySelectorAll(`input[type="radio"][name="options[${i}]"]`);
-      if (radios.length){
-        const r = Array.from(radios).find(x => x.value === val && !x.disabled);
-        if (r && !r.checked){ r.click(); return true; }
-      }
-      // select options[i]
-      const sel = form.querySelector(`select[name="options[${i}]"]`);
-      if (sel && sel.value !== val){
-        sel.value = val;
-        sel.dispatchEvent(new Event('input',{bubbles:true}));
-        sel.dispatchEvent(new Event('change',{bubbles:true}));
-        return true;
-      }
-      // group Dawn-like
-      const gsel = form.querySelector(`[data-index="option${i}"] select`);
-      if (gsel && gsel.value !== val){
-        gsel.value = val;
-        gsel.dispatchEvent(new Event('input',{bubbles:true}));
-        gsel.dispatchEvent(new Event('change',{bubbles:true}));
-        return true;
-      }
-      const grad = form.querySelectorAll(`[data-index="option${i}"] input[type="radio"]`);
-      if (grad.length){
-        const r2 = Array.from(grad).find(x => x.value === val && !x.disabled);
-        if (r2 && !r2.checked){ r2.click(); return true; }
-      }
-      return false;
+    function getSelectedCard(){
+      return root.querySelector('.custom-variant-selector__block.selected') || blocks[0] || null;
     }
-
-    function ensureIdField(variantId){
-      const sel = form.querySelector('select[name="id"]');
-      if (sel){
-        if (String(sel.value) !== String(variantId)){
-          sel.value = String(variantId);
-          sel.dispatchEvent(new Event('input',{bubbles:true}));
-          sel.dispatchEvent(new Event('change',{bubbles:true}));
-        }
-        return;
-      }
-      let hid = form.querySelector('input[name="id"][data-cvs="1"]') || form.querySelector('input[name="id"]');
-      if (!hid){
-        hid = document.createElement('input');
-        hid.type = 'hidden'; hid.name = 'id'; hid.setAttribute('data-cvs','1');
-        form.appendChild(hid);
-      }
-      if (String(hid.value) !== String(variantId)){
-        hid.value = String(variantId);
-        form.dispatchEvent(new Event('input',{bubbles:true}));
-        form.dispatchEvent(new Event('change',{bubbles:true}));
-      }
+    function getSelectedVariant(){
+      const c = getSelectedCard(); if (!c) return null;
+      const v = byOptions(c.dataset.o1, c.dataset.o2, c.dataset.o3) || (c.dataset.variantId ? byId(c.dataset.variantId) : null);
+      return v || null;
     }
-
-    function setATCEnabled(enabled){
-      addBtn.disabled = !enabled;
-      addBtn.setAttribute('aria-disabled', String(!enabled));
+    function getQty(){
+      const q = (form && (form.querySelector('input[name="quantity"]') || form.querySelector('input#Quantity'))) || null;
+      const n = q ? parseInt(q.value,10) : 1;
+      return (isNaN(n) || n<=0) ? 1 : n;
     }
-
-    function uiLoading(on){
-      addBtn.classList.toggle('is-loading', !!on);
-      if (on) addBtn.setAttribute('data-cvs-busy','1'); else addBtn.removeAttribute('data-cvs-busy');
-    }
-
-    function openDrawerUI(){
-      // essais d’événements courants
+    function openDrawer(){
       document.dispatchEvent(new CustomEvent('cart:refresh',{detail:{source:'cvs'}}));
       document.dispatchEvent(new CustomEvent('cart:open',{detail:{source:'cvs'}}));
       document.dispatchEvent(new CustomEvent('product:added',{detail:{source:'cvs'}}));
-      // classes body fréquentes
-      document.body.classList.add('cart-open');
-      document.body.classList.add('drawer--cart-open');
-      // clic sur un opener s’il existe
-      const opener = OPENERS.map(s => document.querySelector(s)).find(Boolean);
+      document.body.classList.add('cart-open','drawer--cart-open');
+      const opener = document.querySelector('[data-cart-drawer-open], [data-action="open-cart"], .js-openCartDrawer, .header__icon--cart, .cart-toggle, .open-cart, #CartDrawer-Open');
       if (opener) opener.click();
     }
-
-    function drawerSeemsOpen(){
-      return DRAWER_OPEN.some(s => document.querySelector(s));
+    function setBtnBusy(on){
+      addBtn.classList.toggle('is-loading', !!on);
+      addBtn.disabled = !!on;
+      addBtn.setAttribute('aria-disabled', String(!!on));
+    }
+    function toast(msg){
+      try{
+        // petit feedback discret
+        addBtn.dataset.cvsMsg = msg;
+        addBtn.classList.add('cvs-bubble');
+        setTimeout(()=>addBtn.classList.remove('cvs-bubble'),1800);
+      }catch(e){}
     }
 
-    function selectCard(card){
-      if (!card) return;
-      blocks.forEach(b => b.classList.remove('selected'));
-      card.classList.add('selected');
-      const r = card.querySelector('input[type="radio"]'); if (r) r.checked = true;
-
-      const o1 = card.dataset.o1 || null;
-      const o2 = OPT_COUNT >= 2 ? (card.dataset.o2 || null) : null;
-      const o3 = OPT_COUNT >= 3 ? (card.dataset.o3 || null) : null;
-
-      if (o1) setNativeOption(1, o1);
-      if (OPT_COUNT >= 2 && o2) setNativeOption(2, o2);
-      if (OPT_COUNT >= 3 && o3) setNativeOption(3, o3);
-
-      let v = byOptions(o1,o2,o3) || (card.dataset.variantId ? byId(card.dataset.variantId) : null);
-      if (v){
-        ensureIdField(v.id);
-        setATCEnabled(v.available);
-        form.dispatchEvent(new Event('product:options:changed',{bubbles:true}));
-        document.dispatchEvent(new CustomEvent('variant:changed',{detail:{variant:v},bubbles:true}));
-      }
-    }
-
+    // Sélection via clic carte (visuel seulement ; on n’a plus besoin de pousser dans le form)
     blocks.forEach(card=>{
       card.addEventListener('click', function(e){
-        e.preventDefault();
-        selectCard(this);
+        blocks.forEach(b=>b.classList.remove('selected'));
+        this.classList.add('selected');
+        const r=this.querySelector('input[type="radio"]'); if (r) r.checked = true;
       });
     });
 
-    function reflectFromNative(){
-      const getVal = (i)=>{
-        const sel = form.querySelector(`select[name="options[${i}]"]`) || form.querySelector(`[data-index="option${i}"] select`);
-        if (sel) return sel.value;
-        const r = form.querySelector(`input[type="radio"][name="options[${i}]"]:checked`) || form.querySelector(`[data-index="option${i}"] input[type="radio"]:checked`);
-        return r ? r.value : null;
-      };
-      const o1 = getVal(1), o2 = OPT_COUNT>=2 ? getVal(2) : null, o3 = OPT_COUNT>=3 ? getVal(3) : null;
-      const v = byOptions(o1,o2,o3);
-      if (!v) return;
+    // Handler ATC : AJOUT AJAX + ouverture tiroir
+    let inflight = false;
+    addBtn.addEventListener('click', async function(ev){
+      ev.preventDefault(); // on remplace l’action native
+      if (inflight) return;
 
-      const target = blocks.find(b => (b.dataset.o1===o1) && (OPT_COUNT<2 || b.dataset.o2===o2) && (OPT_COUNT<3 || b.dataset.o3===o3))
-                   || blocks.find(b => String(b.dataset.variantId) === String(v.id));
-      if (target){
-        blocks.forEach(b => b.classList.remove('selected'));
-        target.classList.add('selected');
-        const r = target.querySelector('input[type="radio"]'); if (r) r.checked = true;
+      const variant = getSelectedVariant();
+      if (!variant){ toast('Variante introuvable'); return; }
+      if (!variant.available){ toast('Variante indisponible'); return; }
+
+      const qty = getQty();
+
+      const fd = new FormData();
+      fd.set('id', variant.id);
+      fd.set('quantity', qty);
+
+      setBtnBusy(true);
+      inflight = true;
+      try{
+        const res = await fetch('/cart/add.js', { method:'POST', body:fd, headers:{'Accept':'application/json'} });
+        if (!res.ok){
+          const t = await res.text();
+          console.warn('[CVS] add.js error', t);
+          toast('Erreur ajout panier');
+          return;
+        }
+        // OK
+        openDrawer();
+      }catch(err){
+        console.warn('[CVS] fetch error', err);
+        toast('Erreur réseau');
+      }finally{
+        setBtnBusy(false);
+        inflight = false;
       }
-      ensureIdField(v.id);
-      setATCEnabled(v.available);
-    }
+    });
 
-    form.addEventListener('change', function(e){
-      if (e.target.matches('select[name^="options["], input[type="radio"][name^="options["]')) {
-        reflectFromNative();
-      }
-    }, true);
-
-    // Init
+    // Init visuelle : marque la première carte sélectionnée
     (function init(){
-      const idField = form.querySelector('select[name="id"], input[name="id"]');
+      const idField = form ? (form.querySelector('select[name="id"], input[name="id"]')) : null;
       const currentId = (idField && idField.value) || "{{ product.selected_or_first_available_variant.id }}";
-      let initialCard = blocks.find(b => String(b.dataset.variantId) === String(currentId)) || blocks[0] || null;
-      if (initialCard) selectCard(initialCard);
+      const initial = blocks.find(b => String(b.dataset.variantId)===String(currentId)) || blocks[0];
+      if (initial){
+        blocks.forEach(b=>b.classList.remove('selected'));
+        initial.classList.add('selected');
+        const r=initial.querySelector('input[type="radio"]'); if (r) r.checked = true;
+      }
     })();
 
-    // --- Pré-injection avant submit/click (ne bloque rien) ---
-    function preflight(){
-      const active = root.querySelector('.custom-variant-selector__block.selected') || blocks[0];
-      if (!active) return;
-      const v = byOptions(active.dataset.o1, active.dataset.o2, active.dataset.o3) || byId(active.dataset.variantId);
-      if (v){ ensureIdField(v.id); setATCEnabled(v.available); }
-    }
-    form.addEventListener('submit', preflight, true);
-    addBtn.addEventListener('click', preflight, true);
-
-    // --- Fallback AJAX (sans bloquer le thème, sans double ajout) ---
-    let inflight = false;
-    form.addEventListener('submit', function(){
-      // Lance un timer très court : si le thème n’ouvre pas le tiroir, on ajoute via AJAX
-      setTimeout(async ()=>{
-        try{
-          if (inflight) return;
-          if (drawerSeemsOpen()) return; // le thème a géré
-          // Vérifie si un id est dans FormData (sinon, on l’ajoute)
-          const fd = new FormData(form);
-          let id = fd.get('id');
-          if (!id){
-            const active = root.querySelector('.custom-variant-selector__block.selected') || blocks[0];
-            const v = active ? (byOptions(active.dataset.o1, active.dataset.o2, active.dataset.o3) || byId(active.dataset.variantId)) : null;
-            if (!v) return;
-            fd.set('id', v.id);
-            id = v.id;
-          }
-
-          inflight = true;
-          uiLoading(true);
-
-          const res = await fetch('/cart/add.js', { method:'POST', body:fd, headers:{'Accept':'application/json'} });
-          // Même si non-ok, on relâche l’état UI :
-          uiLoading(false);
-          inflight = false;
-
-          if (!res.ok) return;
-
-          // Signale ajout + ouvre le tiroir
-          document.dispatchEvent(new CustomEvent('cart:added', {detail:{source:'cvs'}}));
-          openDrawerUI();
-        }catch(e){
-          uiLoading(false);
-          inflight = false;
-        }
-      }, 0);
-    }); // NOTE: pas de {once:true} => multi-ajouts successifs ok
+    // Petit style pour le feedback du bouton
+    const style = document.createElement('style');
+    style.textContent = `
+      .is-loading{opacity:.7; pointer-events:none; position:relative;}
+      .cvs-bubble::after{
+        content: attr(data-cvs-msg);
+        position:absolute; left:50%; transform:translateX(-50%);
+        bottom:115%; background:#111; color:#fff; font-size:12px; padding:6px 8px;
+        border-radius:6px; white-space:nowrap; z-index:9999;
+      }`;
+    document.head.appendChild(style);
   });
 })();
 </script>
