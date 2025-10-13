@@ -142,6 +142,59 @@
         "custom_colors_others_text": "#2e2a39"
       }
     },
+    "press_BVn679": {
+      "type": "press",
+      "blocks": {
+        "quote_VNXPQd": {
+          "type": "quote",
+          "settings": {
+            "logo": "shopify://shop_images/elle_300xlogo.png",
+            "logo_width": 120,
+            "author": "",
+            "content": "LE parfum du moment, nous avons reçu des dizaines et des dizaines de messages à propos de ce parfum",
+            "show_rating": false,
+            "rating": 5
+          }
+        },
+        "quote_PhKjGy": {
+          "type": "quote",
+          "settings": {
+            "logo_width": 120,
+            "author": "",
+            "content": "Write some content about what they say about your store.",
+            "show_rating": true,
+            "rating": 5
+          }
+        },
+        "quote_4PUmNg": {
+          "type": "quote",
+          "settings": {
+            "logo_width": 120,
+            "author": "",
+            "content": "Write some content about what they say about your store.",
+            "show_rating": true,
+            "rating": 5
+          }
+        }
+      },
+      "block_order": [
+        "quote_VNXPQd",
+        "quote_PhKjGy",
+        "quote_4PUmNg"
+      ],
+      "name": "Press",
+      "settings": {
+        "full_width": true,
+        "content_size": "medium",
+        "quote_bold": false,
+        "background": "",
+        "background_gradient": "",
+        "text_color": "",
+        "heading_color": "",
+        "logo_item_background": "",
+        "logo_item_border": ""
+      }
+    },
     "6aa09428-a417-429d-9159-a4e8afd49590": {
       "type": "icon-bar",
       "blocks": {
@@ -317,6 +370,7 @@
   "order": [
     "cfca4268-6358-426c-98ab-d292aeef11e5",
     "d2d3417b-e92f-428c-b221-5bceffb552be",
+    "press_BVn679",
     "6aa09428-a417-429d-9159-a4e8afd49590",
     "0f1fc9e4-bc4c-4052-9747-62d1f8472caa",
     "ee8d9ca6-4a41-401f-83a3-37e138a112b9"
