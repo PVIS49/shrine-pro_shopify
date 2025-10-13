@@ -3,8 +3,15 @@
   {% assign displayed_variants = product.variants | slice: 0, 3 %}
 
   {% for variant in displayed_variants %}
-    <label class="custom-variant-selector__block{% if forloop.first %} selected{% endif %}"
-       data-variant-id="{{ variant.id }}"
+<label
+  class="custom-variant-selector__block{% if forloop.first %} selected{% endif %}"
+  data-variant-id="{{ variant.id }}"
+  data-o1="{{ variant.option1 | escape }}"
+  data-o2="{{ variant.option2 | escape }}"
+  data-o3="{{ variant.option3 | escape }}"
+>
+
+    data-variant-id="{{ variant.id }}"
        data-o1="{{ variant.option1 | escape }}"
        data-o2="{{ variant.option2 | escape }}"
        data-o3="{{ variant.option3 | escape }}">
