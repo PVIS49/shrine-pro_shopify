@@ -147,6 +147,7 @@
         "heading_DYcYfX",
         "text_XzULax"
       ],
+      "disabled": true,
       "name": "t:sections.image-banner.presets.name",
       "settings": {
         "display_id": false,
@@ -174,16 +175,17 @@
           "type": "slide",
           "settings": {
             "desktop_bg_image": "shopify://shop_images/Bannieer_femme_regard.webp",
-            "desktop_overlay_color": "#ffffff",
-            "desktop_overlay_opacity": 0,
-            "mobile_overlay_color": "#ffffff",
-            "mobile_overlay_opacity": 0,
+            "desktop_overlay_color": "#1a1a1a",
+            "desktop_overlay_opacity": 20,
+            "mobile_bg_image": "shopify://shop_images/Bannieer_femme_regard.webp",
+            "mobile_overlay_color": "#1a1a1a",
+            "mobile_overlay_opacity": 20,
             "display_sound_btn": false,
             "sound_btn_color_scheme": "inverse",
             "heading_prefix": "DÉCOUVREZ L'EXPÉRIENCE PARFUM VAILLANT",
             "heading": "",
             "title_highlight_color": "#6D388B",
-            "heading_size": "h1",
+            "heading_size": "h2",
             "heading_suffix": "",
             "heading_prefix_size": "h4",
             "text": "<p>Le Parfum Vaillant ne se contente pas de parfumer, il imprime sa présence. Un accord rare et envoûtant, avec des essences précieuses et des notes chaudes qui vous accompagnent jusqu’au moment décisif.</p>",
@@ -319,6 +321,7 @@
         "heading_tbkkJP",
         "text_9Ne7Ta"
       ],
+      "disabled": true,
       "name": "t:sections.image-banner.presets.name",
       "settings": {
         "display_id": false,
@@ -337,6 +340,76 @@
         "mobile_content_alignment": "center",
         "stack_images_on_mobile": true,
         "show_text_below": false
+      }
+    },
+    "slideshow_hero_N76Mg9": {
+      "type": "slideshow-hero",
+      "blocks": {
+        "slide_nyYXMQ": {
+          "type": "slide",
+          "settings": {
+            "desktop_bg_image": "shopify://shop_images/Banniere_lion.webp",
+            "desktop_overlay_color": "#1a1a1a",
+            "desktop_overlay_opacity": 20,
+            "mobile_bg_image": "shopify://shop_images/Banniere_lion.webp",
+            "mobile_overlay_color": "#1a1a1a",
+            "mobile_overlay_opacity": 20,
+            "display_sound_btn": false,
+            "sound_btn_color_scheme": "inverse",
+            "heading_prefix": "ÉVEILLEZ VOTRE INSTINCT",
+            "heading": "",
+            "title_highlight_color": "#6D388B",
+            "heading_size": "h1",
+            "heading_suffix": "",
+            "heading_prefix_size": "h4",
+            "text": "<p>Vaillant connaît les goûts et points faibles de votre cible… Vaillant sait exactement où frapper.Car au fond, qui peut résister à l’appel de ses pulsions les plus profondes ?</p>",
+            "button_label_1": "",
+            "button_link_1": "",
+            "button_style_secondary_1": false,
+            "button_label_2": "",
+            "button_link_2": "",
+            "button_style_secondary_2": false,
+            "color_scheme": "accent-1",
+            "full_page_width": false,
+            "content_max_width": "unlimited",
+            "content_pixels_max_width": 500,
+            "content_percentage_max_width": 50,
+            "content_vertical_position": "center",
+            "content_horizontal_position": "center",
+            "content_text_alignment": "center",
+            "mobile_content_vertical_position": "center",
+            "mobile_content_text_alignment": "center",
+            "custom_colors_text": "#ffffff",
+            "custom_colors_solid_button_background": "#dd1d1d",
+            "custom_colors_solid_button_text": "#ffffff",
+            "custom_colors_outline_button": "#dd1d1d"
+          }
+        }
+      },
+      "block_order": [
+        "slide_nyYXMQ"
+      ],
+      "name": "Slideshow hero",
+      "settings": {
+        "visibility": "always-display",
+        "min_desktop_height_type": "pixels",
+        "desktop_pixels_height": 600,
+        "min_mobile_height_type": "pixels",
+        "mobile_pixels_height": 400,
+        "transparent_header": false,
+        "transparent_header_text_color": "text",
+        "transparent_header_highlighted_link_color": "background-1",
+        "transparent_header_hover_link_color": "accent-1",
+        "transparent_header_logo": "main",
+        "hide_announcement_bars": false,
+        "slider_type": "loop",
+        "drag": false,
+        "autoplay": false,
+        "autoplay_speed": 10,
+        "enable_dots": true,
+        "dots_color_scheme": "background-1",
+        "padding_top": 50,
+        "padding_bottom": 50
       }
     },
     "press_BVn679": {
@@ -590,6 +663,7 @@
     "slideshow_hero_CLbwTd",
     "image_with_text_TipXcU",
     "image_banner_6NNbX8",
+    "slideshow_hero_N76Mg9",
     "press_BVn679",
     "1760339488c3f5e273",
     "ss_simple_faq_9QAQqX",
