@@ -67,6 +67,23 @@
   #pvv-{{ section.id }}-{{ block.id }} .pvv-compare{ opacity:.55; text-decoration:line-through; margin-right:8px; font-weight:500; }
   #pvv-{{ section.id }}-{{ block.id }} .pvv-badge{ position:absolute; top:10px; left:10px; background:#111; color:#fff; font-size:12px; font-weight:700; border-radius:10px; padding:4px 8px; line-height:1; }
   #pvv-{{ section.id }}-{{ block.id }} .pvv-radio{ position:absolute; opacity:0; pointer-events:none; }
+/* Supprimer le cadre autour du groupe */
+#pvv-{{ section.id }}-{{ block.id }} fieldset,
+#pvv-{{ section.id }}-{{ block.id }} .pvv-grid{
+  border: none;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  box-shadow: none;
+}
+
+/* (optionnel) s’assurer qu’aucun conteneur n’ajoute de bordure */
+#pvv-{{ section.id }}-{{ block.id }}{
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
 </style>
 
 <script>
