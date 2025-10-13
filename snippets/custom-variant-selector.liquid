@@ -1,4 +1,5 @@
-<div class="custom-variant-selector">
+<div id="cvs-{{ section.id }}-{{ block.id }}" class="custom-variant-selector">
+
   {% assign displayed_variants = product.variants | slice: 0, 3 %}
 
   {% for variant in displayed_variants %}
