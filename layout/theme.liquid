@@ -573,5 +573,121 @@
         })
       </script>
     {% endif %}
+    <script>
+/* --- Hook universel Add-to-Cart → rafraîchir sections + ouvrir drawer --- */
+(function(){
+  if (window.__hookedCartAdd) return; window.__hookedCartAdd = true;
+
+  // 1) utilitaires
+  function detectSectionIds(){
+    const drawerEl = document.querySelector('#CartDrawer-Section,[data-section-type="cart-drawer"]');
+    const headerRoot = document.querySelector('[data-section-type="header"]')?.closest('[data-section-id]')
+                    || document.querySelector('header')?.closest('[data-section-id]');
+    const ids = [drawerEl?.dataset.sectionId, headerRoot?.dataset.sectionId].filter(Boolean);
+    return { ids, param: encodeURIComponent(ids.join(',')), url: encodeURIComponent(location.pathname) };
+  }
+  function replaceSections(map, ids){
+    if (!map || !ids.length) return;
+    ids.forEach((id)=>{
+      const html = map[id]; if (!html) return;
+      const tmp = document.createElement('div'); tmp.innerHTML = html.trim();
+      const fresh = tmp.querySelector(`[data-section-id="${id}"]`) || tmp.firstElementChild;
+      const current = document.querySelector(`[data-section-id="${id}"]`);
+      if (fresh && current) current.replaceWith(fresh);
+    });
+  }
+  function openDrawer(){
+    const drawer = document.querySelector('cart-drawer, #CartDrawer');
+    if (drawer && typeof drawer.open === 'function'){ try{ drawer.open(); }catch(e){} }
+    document.dispatchEvent(new CustomEvent('cart:open',{detail:{source:'hook'}}));
+    document.body.classList.add('cart-open','drawer--cart-open');
+    const opener = document.querySelector('[data-cart-drawer-open], [data-action="open-cart"], .js-openCartDrawer, .header__icon--cart, .cart-toggle, .open-cart, #CartDrawer-Open');
+    if (opener) opener.click();
+  }
+  function isCartAdd(input, init){
+    const url = (typeof input === 'string') ? input : (input?.url || '');
+    const m = url.replace(location.origin,'');
+    const method = (init?.method || (typeof input !== 'string' ? input?.method : '') || 'GET').toUpperCase();
+    return method === 'POST' && (/\/cart\/add(\.js)?(\?|$)/.test(m));
+  }
+  function ensureSectionsParams(url, param, sectionsUrl){
+    // ajoute ?sections=…&sections_url=… si absent
+    const u = new URL(url, location.origin);
+    if (!u.searchParams.has('sections') && param) u.searchParams.set('sections', decodeURIComponent(param));
+    if (!u.searchParams.has('sections_url') && sectionsUrl) u.searchParams.set('sections_url', decodeURIComponent(sectionsUrl));
+    return u.toString();
+  }
+
+  // 2) Hook fetch
+  const origFetch = window.fetch;
+  window.fetch = async function(input, init){
+    const hook = isCartAdd(input, init);
+    let meta = null;
+    if (hook){ meta = detectSectionIds(); }
+    if (hook){
+      // injecte les params sections si manquants
+      const url = (typeof input === 'string') ? input : (input?.url || '');
+      const patched = ensureSectionsParams(url, meta.param, meta.url);
+      if (typeof input === 'string') input = patched;
+      else if (input && 'url' in input) { try { input = new Request(patched, input); } catch(e){} }
+    }
+    const res = await origFetch.apply(this, arguments);
+    if (!hook) return res;
+
+    // on lit la réponse et rafraîchit les sections
+    try{
+      const clone = res.clone();
+      const json = await clone.json().catch(()=>null);
+      const map = json?.sections || json || {};
+      replaceSections(map, meta.ids);
+      document.dispatchEvent(new CustomEvent('cart:refresh',{detail:{source:'hook'}}));
+      document.dispatchEvent(new CustomEvent('cart:updated',{detail:{source:'hook'}}));
+      // ouvre le drawer après refresh
+      openDrawer();
+    }catch(e){
+      // dernier recours : rafraîchir via /cart.js puis ouvrir
+      try{
+        await fetch('/cart.js',{headers:{'Accept':'application/json'}});
+        openDrawer();
+      }catch(_){}
+    }
+    return res;
+  };
+
+  // 3) Hook XMLHttpRequest (si le thème n’utilise pas fetch)
+  const XHR = window.XMLHttpRequest;
+  if (XHR && !XHR.__hooked){
+    const open = XHR.prototype.open;
+    const send = XHR.prototype.send;
+    XHR.prototype.open = function(method, url){
+      this.__isCartAdd = (String(method).toUpperCase()==='POST' && /\/cart\/add(\.js)?(\?|$)/.test(String(url)));
+      if (this.__isCartAdd){
+        const {param,url:sectionsUrl} = detectSectionIds();
+        url = ensureSectionsParams(url, param, sectionsUrl);
+      }
+      this.__url = url;
+      return open.apply(this, arguments);
+    };
+    XHR.prototype.send = function(body){
+      if (this.__isCartAdd){
+        this.addEventListener('load', () => {
+          try{
+            const json = JSON.parse(this.responseText);
+            const map = json.sections || json || {};
+            const {ids} = detectSectionIds();
+            replaceSections(map, ids);
+            document.dispatchEvent(new CustomEvent('cart:refresh',{detail:{source:'xhr'}}));
+            document.dispatchEvent(new CustomEvent('cart:updated',{detail:{source:'xhr'}}));
+            openDrawer();
+          }catch(e){}
+        });
+      }
+      return send.apply(this, arguments);
+    };
+    XHR.__hooked = true;
+  }
+})();
+</script>
+
   </body>
 </html>
