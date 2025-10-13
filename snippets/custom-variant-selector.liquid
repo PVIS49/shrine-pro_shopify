@@ -144,131 +144,40 @@
 
     const VARIANTS   = {{ product.variants | json }};
     const OPT_COUNT  = {{ product.options | size }};
-    const contextEl  = root.closest('section') || document;
+    const ctx        = root.closest('section') || document;
 
-    const addBtn = contextEl.querySelector('button[name="add"], button[type="submit"]:not(.shopify-payment-button__button)');
-    const form   = addBtn ? (addBtn.closest('form') || contextEl.querySelector('form[action*="/cart/add"]')) : null;
+    const addBtn = ctx.querySelector('button[name="add"], button[type="submit"]:not(.shopify-payment-button__button)');
+    const form   = addBtn ? (addBtn.closest('form') || ctx.querySelector('form[action*="/cart/add"]')) : null;
     if (!addBtn) return;
 
-    const cards = Array.from(root.querySelectorAll('.custom-variant-selector__block'));
+    const cards  = Array.from(root.querySelectorAll('.custom-variant-selector__block'));
 
+    function byId(id){ return VARIANTS.find(v => String(v.id)===String(id)); }
     function byOptions(o1,o2,o3){
-      return VARIANTS.find(v=>{
-        const o=v.options;
-        return (o[0]==o1) && (OPT_COUNT<2 || o[1]==o2) && (OPT_COUNT<3 || o[2]==o3);
+      return VARIANTS.find(v => {
+        const o=v.options; return (o[0]==o1) && (OPT_COUNT<2 || o[1]==o2) && (OPT_COUNT<3 || o[2]==o3);
       });
     }
-    function byId(id){ return VARIANTS.find(v=>String(v.id)===String(id)); }
-
-    function getSelectedCard(){
-      return root.querySelector('.custom-variant-selector__block.selected') || cards[0] || null;
-    }
+    function getSelectedCard(){ return root.querySelector('.custom-variant-selector__block.selected') || cards[0] || null; }
     function getSelectedVariant(){
       const c = getSelectedCard(); if (!c) return null;
       return byOptions(c.dataset.o1, c.dataset.o2, c.dataset.o3) || (c.dataset.variantId ? byId(c.dataset.variantId) : null);
     }
     function getQty(){
       const q = form && (form.querySelector('input[name="quantity"]') || form.querySelector('input#Quantity'));
-      const n = q ? parseInt(q.value,10) : 1;
-      return (isNaN(n) || n<=0) ? 1 : n;
+      const n = q ? parseInt(q.value,10) : 1; return (isNaN(n) || n<=0) ? 1 : n;
     }
 
-    // ---- Section Rendering API helpers ----
-    function findCartSectionIds(){
-      const ids = [];
-      // Drawer section (cherche un conteneur de section avec un type cart/minicart)
-      const drawer = document.querySelector(
-        '.cart-drawer[data-section-id], [data-section-type*="cart"][data-section-id], ' +
-        '[id*="CartDrawer"][data-section-id], [data-cart-drawer][data-section-id]'
-      );
-      if (drawer?.dataset.sectionId) ids.push(drawer.dataset.sectionId);
-
-      // Bulle compteur dans le header (met à jour l’icône)
-      const bubble = document.querySelector('.cart-count-bubble, [data-cart-count-bubble]');
-      const bubbleSection = bubble ? bubble.closest('[data-section-id]') : null;
-      if (bubbleSection?.dataset.sectionId && !ids.includes(bubbleSection.dataset.sectionId)) {
-        ids.push(bubbleSection.dataset.sectionId);
-      }
-      return ids;
-    }
-
-    async function renderSections(sectionIds){
-      if (!sectionIds.length) return false;
-      const url = `${window.location.pathname}?sections=${encodeURIComponent(sectionIds.join(','))}`;
-      const res = await fetch(url, { headers: { 'Accept': 'application/json' }});
-      if (!res.ok) return false;
-      const json = await res.json();
-
-      sectionIds.forEach(id=>{
-        const html = json[id];
-        if (!html) return;
-        const current = document.querySelector(`[data-section-id="${id}"]`);
-        if (!current) return;
-        const tmp = document.createElement('div');
-        tmp.innerHTML = html;
-        const replacement = tmp.querySelector(`[data-section-id="${id}"]`) || tmp.firstElementChild;
-        if (replacement) current.replaceWith(replacement);
-      });
-      return true;
-    }
-
-    async function refreshCartUI(){
-      // 1) Tentative “propre” : rerender des sections
-      const ids = findCartSectionIds();
-      const ok  = await renderSections(ids);
-
-      // 2) À défaut, MAJ du compteur via /cart.js
-      try{
-        const cartRes = await fetch('/cart.js', { headers:{'Accept':'application/json'} });
-        if (cartRes.ok){
-          const cart = await cartRes.json();
-          const cnt  = (cart && Array.isArray(cart.items)) ? cart.items.reduce((s,i)=>s+i.quantity,0) : 0;
-          const bubble = document.querySelector('.cart-count-bubble, [data-cart-count-bubble]');
-          if (bubble){
-            const span = bubble.querySelector('span') || bubble;
-            span.textContent = String(cnt);
-            bubble.classList.toggle('hidden', cnt<=0);
-          }
-        }
-      }catch(e){}
-
-      // 3) Signal aux scripts du thème
-      document.dispatchEvent(new CustomEvent('cart:refresh', {detail:{source:'cvs'}}));
-      document.dispatchEvent(new CustomEvent('cart:updated', {detail:{source:'cvs'}}));
-      return ok;
-    }
-
-    function openDrawer(){
-      document.dispatchEvent(new CustomEvent('cart:open',{detail:{source:'cvs'}}));
-      document.body.classList.add('cart-open','drawer--cart-open');
-      const opener = document.querySelector('[data-cart-drawer-open], [data-action="open-cart"], .js-openCartDrawer, .header__icon--cart, .cart-toggle, .open-cart, #CartDrawer-Open');
-      if (opener) opener.click();
-    }
-
-    function setBtnBusy(on){
-      addBtn.classList.toggle('is-loading', !!on);
-      addBtn.disabled = !!on;
-      addBtn.setAttribute('aria-disabled', String(!!on));
-    }
-    function toast(msg){
-      try{
-        addBtn.dataset.cvsMsg = msg;
-        addBtn.classList.add('cvs-bubble');
-        setTimeout(()=>addBtn.classList.remove('cvs-bubble'),1800);
-      }catch(e){}
-    }
-
-    // Sélection visuelle
+    // --- Sélection visuelle des cartes ---
     cards.forEach(card=>{
-      card.addEventListener('click', function(e){
+      card.addEventListener('click', function(){
         cards.forEach(b=>b.classList.remove('selected'));
         this.classList.add('selected');
         const r=this.querySelector('input[type="radio"]'); if (r) r.checked = true;
       });
     });
-
-    // Init visuelle
-    (function init(){
+    // Init
+    (function(){
       const idField = form ? (form.querySelector('select[name="id"], input[name="id"]')) : null;
       const currentId = (idField && idField.value) || "{{ product.selected_or_first_available_variant.id }}";
       const initial = cards.find(b => String(b.dataset.variantId)===String(currentId)) || cards[0];
@@ -279,56 +188,127 @@
       }
     })();
 
-    // ATC: on gère tout en AJAX + refresh sections + ouverture tiroir
+    // --- Section rendering helpers ---
+    // Liste large : on demande plusieurs sections possibles (Shopify renvoie seulement celles qui existent)
+    const SECTION_KEYS = [
+      'cart-drawer','cart-icon-bubble','cart-items','main-cart-items',
+      'cart-live-region-text','header','cart-notification'
+    ];
+    const sectionsParam = encodeURIComponent(SECTION_KEYS.join(','));
+    const sectionsUrl   = encodeURIComponent(window.location.pathname);
+
+    // Remplace proprement les sections renvoyées (on s’appuie sur data-section-id présent dans le HTML retourné)
+    function replaceSectionsFromJSON(sectionsMap){
+      if (!sectionsMap) return false;
+      let replacedSomething = false;
+      Object.keys(sectionsMap).forEach(key=>{
+        const html = sectionsMap[key];
+        if (!html) return;
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html.trim();
+
+        // Cherche un noeud porteur du data-section-id (Shopify le met en racine)
+        const replacement = tmp.querySelector('[data-section-id]') || tmp.firstElementChild;
+        if (!replacement) return;
+
+        const sid = replacement.getAttribute('data-section-id');
+        if (!sid) return;
+
+        const current = document.querySelector(`[data-section-id="${sid}"]`);
+        if (!current) return;
+
+        current.replaceWith(replacement);
+        replacedSomething = true;
+      });
+      return replacedSomething;
+    }
+
+    function openDrawerUI(){
+      // Méthodes courantes pour ouvrir le drawer
+      document.dispatchEvent(new CustomEvent('cart:open',{detail:{source:'cvs'}}));
+      document.body.classList.add('cart-open','drawer--cart-open');
+      const opener = document.querySelector(
+        '[data-cart-drawer-open], [data-action="open-cart"], .js-openCartDrawer, .header__icon--cart, .cart-toggle, .open-cart, #CartDrawer-Open'
+      );
+      if (opener) opener.click();
+    }
+
+    function setBtnBusy(on){
+      addBtn.classList.toggle('is-loading', !!on);
+      addBtn.disabled = !!on;
+      addBtn.setAttribute('aria-disabled', String(!!on));
+    }
+
+    // --- Add to Cart via add.js + sections ---
     let inflight = false;
     addBtn.addEventListener('click', async function(ev){
-      ev.preventDefault();
+      ev.preventDefault(); // on remplace l’action native
       if (inflight) return;
 
-      const variant = getSelectedVariant();
-      if (!variant){ toast('Variante introuvable'); return; }
-      if (!variant.available){ toast('Variante indisponible'); return; }
+      const v = getSelectedVariant();
+      if (!v || !v.id){ return; }
+      if (!v.available){ return; }
 
       const qty = getQty();
-
-      const fd = new FormData();
-      fd.set('id', variant.id);
+      const fd  = new FormData();
+      fd.set('id', v.id);
       fd.set('quantity', qty);
 
-      inflight = true;
-      setBtnBusy(true);
+      setBtnBusy(true); inflight = true;
       try{
-        const res = await fetch('/cart/add.js', { method:'POST', body:fd, headers:{'Accept':'application/json'} });
+        const res = await fetch(`/cart/add.js?sections=${sectionsParam}&sections_url=${sectionsUrl}`, {
+          method:'POST', body:fd, headers:{ 'Accept':'application/json' }
+        });
         if (!res.ok){
-          toast('Erreur ajout panier');
-          return;
+          setBtnBusy(false); inflight = false; return;
         }
-        // Re-render UI du panier AVANT d’ouvrir
-        await refreshCartUI();
-        openDrawer();
+        const json = await res.json();
+
+        // 1) Si le thème a un <cart-drawer> avec renderContents(), utilisons-le (Dawn-like)
+        const drawerEl = document.querySelector('cart-drawer, #CartDrawer');
+        if (drawerEl && typeof drawerEl.renderContents === 'function'){
+          try { drawerEl.renderContents(json); } catch(e){}
+        }
+
+        // 2) Remplacement DOM des sections renvoyées (fiable tous thèmes)
+        const replaced = replaceSectionsFromJSON(json.sections || json);
+
+        // 3) Dernier recours : MAJ compteur via /cart.js (si aucune section n’a été remplacée)
+        if (!replaced){
+          try{
+            const r2 = await fetch('/cart.js', { headers:{'Accept':'application/json'} });
+            if (r2.ok){
+              const cart = await r2.json();
+              const cnt  = Array.isArray(cart.items) ? cart.items.reduce((s,i)=>s+i.quantity,0) : 0;
+              const bubble = document.querySelector('.cart-count-bubble, [data-cart-count-bubble]');
+              if (bubble){
+                const span = bubble.querySelector('span') || bubble;
+                span.textContent = String(cnt);
+                bubble.classList.toggle('hidden', cnt<=0);
+              }
+            }
+          }catch(e){}
+        }
+
+        // 4) Ouvrir le tiroir
+        openDrawerUI();
+
+        // 5) Émettre des events que beaucoup de thèmes écoutent
+        document.dispatchEvent(new CustomEvent('cart:refresh',{detail:{source:'cvs'}}));
+        document.dispatchEvent(new CustomEvent('cart:updated',{detail:{source:'cvs'}}));
+        document.dispatchEvent(new CustomEvent('product:added',{detail:{source:'cvs', variant:v}}));
+
       }catch(err){
-        toast('Erreur réseau');
+        // silence
       }finally{
-        setBtnBusy(false);
-        inflight = false;
+        setBtnBusy(false); inflight = false;
       }
     });
 
-    // Styles de feedback
+    // petit style feedback
     const style = document.createElement('style');
-    style.textContent = `
-      .is-loading{opacity:.7; pointer-events:none; position:relative;}
-      .cvs-bubble::after{
-        content: attr(data-cvs-msg);
-        position:absolute; left:50%; transform:translateX(-50%);
-        bottom:115%; background:#111; color:#fff; font-size:12px; padding:6px 8px;
-        border-radius:6px; white-space:nowrap; z-index:9999;
-      }`;
+    style.textContent = `.is-loading{opacity:.7;pointer-events:none;position:relative;}`;
     document.head.appendChild(style);
   });
 })();
 </script>
-
-
-
-
