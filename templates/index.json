@@ -220,6 +220,49 @@
         "custom_section_gradient_background": ""
       }
     },
+    "image_banner_6NNbX8": {
+      "type": "image-banner",
+      "blocks": {
+        "heading_tbkkJP": {
+          "type": "heading",
+          "settings": {
+            "title": "Image banner",
+            "title_highlight_color": "#6D388B",
+            "heading_size": "h1"
+          }
+        },
+        "text_9Ne7Ta": {
+          "type": "text",
+          "settings": {
+            "text": "Give customers details about the banner image(s) or content on the template.",
+            "text_style": "body"
+          }
+        }
+      },
+      "block_order": [
+        "heading_tbkkJP",
+        "text_9Ne7Ta"
+      ],
+      "name": "t:sections.image-banner.presets.name",
+      "settings": {
+        "display_id": false,
+        "visibility": "always-display",
+        "image": "shopify://shop_images/Banniere_lion.webp",
+        "image_1_visibility": "always-display",
+        "image_2_visibility": "always-display",
+        "image_overlay_opacity": 0,
+        "image_height": "medium",
+        "url": "",
+        "desktop_content_position": "middle-center",
+        "show_text_box": true,
+        "desktop_content_alignment": "center",
+        "color_scheme": "background-1",
+        "transparent_container_color": "white",
+        "mobile_content_alignment": "center",
+        "stack_images_on_mobile": true,
+        "show_text_below": true
+      }
+    },
     "press_BVn679": {
       "type": "press",
       "blocks": {
@@ -511,6 +554,7 @@
     "image_with_text_ewhUGq",
     "image_banner_nYgATc",
     "image_with_text_TipXcU",
+    "image_banner_6NNbX8",
     "press_BVn679",
     "0f1fc9e4-bc4c-4052-9747-62d1f8472caa",
     "ss_simple_faq_9QAQqX",
