@@ -4,10 +4,10 @@
 
   {% for variant in displayed_variants %}
     <label class="custom-variant-selector__block{% if forloop.first %} selected{% endif %}"
-data-variant-id="{{ variant.id }}"
-data-o1="{{ variant.option1 | escape }}"
-data-o2="{{ variant.option2 | escape }}"
-data-o3="{{ variant.option3 | escape }}">
+       data-variant-id="{{ variant.id }}"
+       data-o1="{{ variant.option1 | escape }}"
+       data-o2="{{ variant.option2 | escape }}"
+       data-o3="{{ variant.option3 | escape }}">
 
       <span class="variant-indicator"></span>
       <input type="radio" name="custom_variant_id" class="hidden-radio" value="{{ variant.id }}" {% if forloop.first %}checked{% endif %}>
@@ -141,71 +141,69 @@ document.addEventListener("DOMContentLoaded", function () {
             || document.querySelector(".custom-variant-selector");
   if (!root) return;
 
+  // -- Trouver le bon form du thème (ordre de priorité large pour Shrine/Dawn/Impact) --
   const form =
+    // ID classique des thèmes récents
     document.getElementById("product-form-{{ section.id }}") ||
+    // Web component <product-form> (Shopify)
+    root.closest("product-form")?.querySelector('form[action*="/cart/add"]') ||
+    // Dans la section courante
     root.closest("section")?.querySelector('form[action*="/cart/add"]') ||
+    // Fallback global (dernier recours)
     document.querySelector('form[action*="/cart/add"]');
   if (!form) return;
 
-  // Bouton ATC (on NE l’intercepte PLUS)
+  // Référence du bouton ATC (pour certains thèmes il n’a pas name="add")
   const addBtn =
     form.querySelector('button[name="add"]') ||
     form.querySelector('button[type="submit"]:not(.shopify-payment-button__button)');
 
-  // 1) Helpers: clique/positionne TOUT ce que les thèmes utilisent comme options
-  function clickIfDifferent(el){ 
-    if (el && !el.disabled) { el.click ? el.click() : (el.dispatchEvent(new MouseEvent('click', {bubbles:true}))); }
-  }
+  // --- Helpers DOM ---
+  function clickIfDifferent(el){ if (el && !el.disabled) { el.click ? el.click() : el.dispatchEvent(new MouseEvent('click',{bubbles:true})); } }
   function setValue(el, val){
     if (!el || el.disabled) return;
     if (el.tagName === 'SELECT') {
       if (el.value !== val) {
         el.value = val;
-        el.dispatchEvent(new Event('input', {bubbles:true}));
-        el.dispatchEvent(new Event('change', {bubbles:true}));
+        el.dispatchEvent(new Event('input',{bubbles:true}));
+        el.dispatchEvent(new Event('change',{bubbles:true}));
       }
     } else if (el.tagName === 'INPUT') {
-      if (el.type === 'radio' || el.type === 'checkbox') {
-        if (el.value === val && !el.checked) clickIfDifferent(el);
-      } else {
-        if (el.value !== val) {
-          el.value = val;
-          el.dispatchEvent(new Event('input', {bubbles:true}));
-          el.dispatchEvent(new Event('change', {bubbles:true}));
-        }
+      if ((el.type === 'radio' || el.type === 'checkbox') && el.value === val && !el.checked) clickIfDifferent(el);
+      else if (el.type !== 'radio' && el.type !== 'checkbox' && el.value !== val) {
+        el.value = val;
+        el.dispatchEvent(new Event('input',{bubbles:true}));
+        el.dispatchEvent(new Event('change',{bubbles:true}));
       }
     } else if (el.tagName === 'BUTTON') {
-      // boutons de swatch
       if ((el.dataset.value || el.getAttribute('data-option-value')) == val) clickIfDifferent(el);
     }
   }
 
-  // Essaie un maximum de schémas d’options (radios, selects, boutons de swatch…)
   function applyOption(index, value){
     if (!value) return;
-    const i = index + 1; // options[1..3]
+    const i = index + 1;
 
-    // radios classiques options[i]
+    // radios options[i]
     const radios = form.querySelectorAll(`input[type="radio"][name="options[${i}]"]`);
     if (radios.length) {
       const target = Array.from(radios).find(r => r.value === value && !r.disabled);
       if (target) { clickIfDifferent(target); return; }
     }
-
-    // selects classiques options[i]
+    // select options[i]
     const sel = form.querySelector(`select[name="options[${i}]"]`);
     if (sel) { setValue(sel, value); return; }
 
-    // schémas "data-index" (Dawn-like)
-    const byIndexInput = form.querySelectorAll(`[data-index="option${i}"] input[type="radio"]`);
-    if (byIndexInput.length) {
-      const target = Array.from(byIndexInput).find(r => r.value === value && !r.disabled);
-      if (target) { clickIfDifferent(target); return; }
+    // data-index / Dawn-like
+    const groupRadios = form.querySelectorAll(`[data-index="option${i}"] input[type="radio"]`);
+    if (groupRadios.length) {
+      const t = Array.from(groupRadios).find(r => r.value === value && !r.disabled);
+      if (t) { clickIfDifferent(t); return; }
     }
-    const byIndexSelect = form.querySelector(`[data-index="option${i}"] select`);
-    if (byIndexSelect) { setValue(byIndexSelect, value); return; }
+    const groupSelect = form.querySelector(`[data-index="option${i}"] select`);
+    if (groupSelect) { setValue(groupSelect, value); return; }
 
-    // boutons de swatch (divers thèmes)
+    // swatch divers
     const swatchBtn = form.querySelector(
       `[data-option-position="${i}"][data-option-value="${CSS.escape(value)}"],` +
       `[data-option-index="${i}"][data-value="${CSS.escape(value)}"],` +
@@ -213,13 +211,37 @@ document.addEventListener("DOMContentLoaded", function () {
       `.swatch [data-option-position="${i}"][data-value="${CSS.escape(value)}"]`
     );
     if (swatchBtn) { clickIfDifferent(swatchBtn); return; }
+  }
 
-    // Fallback ultra-générique : bouton/élément ayant le texte = value dans un groupe option i
-    const group = form.querySelector(`[data-index="option${i}"], [data-option-position="${i}"], .product-form__input:nth-of-type(${i})`);
-    if (group) {
-      const candidate = Array.from(group.querySelectorAll('button, [role="button"], [data-value], [data-option-value]'))
-        .find(b => (b.dataset.value||b.dataset.optionValue||b.textContent||'').trim() === value);
-      if (candidate) { clickIfDifferent(candidate); }
+  // --- Gestion propre de l'input name="id" ---
+  function ensureSingleIdInput(variantId){
+    // supprime nos anciens inputs marqués
+    form.querySelectorAll('input[name="id"][data-cvs="1"]').forEach(n => n.remove());
+
+    // récupère un input id natif s'il existe
+    let idInput = form.querySelector('input[name="id"]');
+    const idSelect = form.querySelector('select[name="id"]');
+
+    if (idSelect) {
+      if (String(idSelect.value) !== String(variantId)) {
+        idSelect.value = variantId;
+        idSelect.dispatchEvent(new Event('input',{bubbles:true}));
+        idSelect.dispatchEvent(new Event('change',{bubbles:true}));
+      }
+      return; // priorité au select natif si présent
+    }
+
+    if (!idInput) {
+      idInput = document.createElement('input');
+      idInput.type = 'hidden';
+      idInput.name = 'id';
+      idInput.setAttribute('data-cvs','1'); // marqueur pour éviter les doublons
+      form.appendChild(idInput);
+    }
+    if (String(idInput.value) !== String(variantId)) {
+      idInput.value = variantId;
+      form.dispatchEvent(new Event('input',{bubbles:true}));
+      form.dispatchEvent(new Event('change',{bubbles:true}));
     }
   }
 
@@ -227,51 +249,29 @@ document.addEventListener("DOMContentLoaded", function () {
     const desired = [card.dataset.o1, card.dataset.o2, card.dataset.o3].filter(Boolean);
     desired.forEach((val, idx) => applyOption(idx, val));
 
-    // Assure un champ name="id" correct si le thème en a besoin
-    const idSelect = form.querySelector('select[name="id"]');
-    const idInput  = form.querySelector('input[name="id"]');
     const variantId = card.dataset.variantId;
+    if (variantId) ensureSingleIdInput(variantId);
 
-    if (variantId) {
-      if (idSelect && idSelect.value !== variantId) {
-        idSelect.value = variantId;
-        idSelect.dispatchEvent(new Event('input', {bubbles:true}));
-        idSelect.dispatchEvent(new Event('change', {bubbles:true}));
-      } else if (idInput) {
-        if (idInput.value !== variantId) {
-          idInput.value = variantId;
-          form.dispatchEvent(new Event('input', {bubbles:true}));
-          form.dispatchEvent(new Event('change', {bubbles:true}));
-        }
-      } else {
-        const hidden = document.createElement('input');
-        hidden.type = 'hidden';
-        hidden.name = 'id';
-        hidden.value = variantId;
-        form.appendChild(hidden);
-      }
-    }
-
-    // ping aux scripts thème
-    form.dispatchEvent(new Event('product:options:changed', {bubbles:true}));
-    document.dispatchEvent(new Event('variant:changed', {bubbles:true}));
+    // Notifie les scripts du thème
+    form.dispatchEvent(new Event('product:options:changed',{bubbles:true}));
+    document.dispatchEvent(new Event('variant:changed',{bubbles:true}));
   }
 
-  // 2) Clicks sur tes cartes
+  // --- Clicks sur les cartes ---
   const blocks = root.querySelectorAll('[data-variant-id], .custom-variant-selector__block');
   blocks.forEach((block) => {
-    block.addEventListener('click', function(){
+    block.addEventListener('click', function(e){
       // état visuel
       blocks.forEach(b => b.classList && b.classList.remove('selected'));
       this.classList && this.classList.add('selected');
       const r = this.querySelector('input[type="radio"]'); if (r) r.checked = true;
 
-      // synchro native
+      // synchro
       syncFromCard(this);
     });
   });
 
-  // 3) Init visuelle alignée sur l’état actuel
+  // --- Init visuelle selon l'ID courant du form ---
   const idField = form.querySelector('select[name="id"], input[name="id"]');
   const currentId = (idField && idField.value) || "{{ product.selected_or_first_available_variant.id }}";
   const initial = Array.from(blocks).find(b => (b.getAttribute('data-variant-id')||'') === String(currentId));
@@ -279,10 +279,17 @@ document.addEventListener("DOMContentLoaded", function () {
     blocks.forEach(b => b.classList && b.classList.remove('selected'));
     initial.classList && initial.classList.add('selected');
     const ri = initial.querySelector('input[type="radio"]'); if (ri) ri.checked = true;
+    ensureSingleIdInput(currentId);
   }
 
-  // 4) NE TOUCHE PAS AU SUBMIT/ATC : on laisse le thème poster le form
-  // Si ATC ne réagit toujours pas, ajoute temporairement:
-  // window.__cvs_debug = true; et regarde la console pour voir quels sélecteurs ont matché.
+  // --- Ceinture et bretelles : juste avant la soumission, on garantit l'ID ---
+  form.addEventListener('submit', function(e){
+    const active = root.querySelector('.custom-variant-selector__block.selected') || blocks[0];
+    const vid = active?.getAttribute('data-variant-id');
+    if (vid) ensureSingleIdInput(vid);
+    // Optionnel debug :
+    // console.log('[CVS] submit with id=', form.querySelector('input[name="id"], select[name="id"]')?.value);
+  }, true);
 });
 </script>
+
