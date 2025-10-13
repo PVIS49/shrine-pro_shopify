@@ -306,66 +306,24 @@
         "logo_item_border": ""
       }
     },
-    "0f1fc9e4-bc4c-4052-9747-62d1f8472caa": {
-      "type": "results",
+    "1760339488c3f5e273": {
+      "type": "apps",
       "blocks": {
-        "template--21507361505575__0f1fc9e4-bc4c-4052-9747-62d1f8472caa-row-1": {
-          "type": "row",
+        "judge_me_reviews_review_widget_homepage_TPKaHz": {
+          "type": "shopify://apps/judge-me-reviews/blocks/review_widget_homepage/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
           "settings": {
-            "percentage": 90,
-            "row_text": "<p>Noticed that this product has significantly improved their life.</p>"
-          }
-        },
-        "template--21507361505575__0f1fc9e4-bc4c-4052-9747-62d1f8472caa-row-2": {
-          "type": "row",
-          "settings": {
-            "percentage": 90,
-            "row_text": "<p>Noticed that this product has significantly improved their life.</p>"
-          }
-        },
-        "template--21507361505575__0f1fc9e4-bc4c-4052-9747-62d1f8472caa-row-3": {
-          "type": "row",
-          "settings": {
-            "percentage": 90,
-            "row_text": "<p>Noticed that this product has significantly improved their life.</p>"
+            "product": "parfum-vaillant",
+            "review_data": "sample_data",
+            "max_width": 1200
           }
         }
       },
       "block_order": [
-        "template--21507361505575__0f1fc9e4-bc4c-4052-9747-62d1f8472caa-row-1",
-        "template--21507361505575__0f1fc9e4-bc4c-4052-9747-62d1f8472caa-row-2",
-        "template--21507361505575__0f1fc9e4-bc4c-4052-9747-62d1f8472caa-row-3"
+        "judge_me_reviews_review_widget_homepage_TPKaHz"
       ],
       "settings": {
         "display_id": false,
-        "visibility": "always-display",
-        "title": "Results",
-        "title_highlight_color": "#6d388b",
-        "heading_size": "h1",
-        "text": "<p>Talk about results of your customers and how your product improved their life.</p>",
-        "color_scheme": "background-1",
-        "layout": "results_second",
-        "results_headline": "Results heading",
-        "results_title_highlight_color": "#6d388b",
-        "results_headline_size": "h2",
-        "results_text": "",
-        "results_headline_alignment": "left",
-        "caption": "<p>Caption about the results and/or link for their proof.</p>",
-        "button_label": "",
-        "link": "",
-        "button_style_secondary": false,
-        "atc_button_label": "",
-        "atc_product": "",
-        "atc_skip_cart": false,
-        "padding_top": 36,
-        "padding_bottom": 36,
-        "custom_colors_background": "#ffffff",
-        "custom_gradient_background": "",
-        "custom_colors_text": "#2e2a39",
-        "custom_colors_accent": "#dd1d1d",
-        "custom_colors_solid_button_background": "#dd1d1d",
-        "custom_colors_solid_button_text": "#ffffff",
-        "custom_colors_outline_button": "#dd1d1d"
+        "include_margins": true
       }
     },
     "ss_simple_faq_9QAQqX": {
@@ -556,7 +514,7 @@
     "image_with_text_TipXcU",
     "image_banner_6NNbX8",
     "press_BVn679",
-    "0f1fc9e4-bc4c-4052-9747-62d1f8472caa",
+    "1760339488c3f5e273",
     "ss_simple_faq_9QAQqX",
     "ee8d9ca6-4a41-401f-83a3-37e138a112b9",
     "icon_bar_hMYG4f"
