@@ -136,160 +136,104 @@
 </style>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function () {
   const root = document.getElementById("cvs-{{ section.id }}-{{ block.id }}") 
             || document.querySelector(".custom-variant-selector");
   if (!root) return;
 
-  // -- Trouver le bon form du thème (ordre de priorité large pour Shrine/Dawn/Impact) --
-  const form =
-    // ID classique des thèmes récents
-    document.getElementById("product-form-{{ section.id }}") ||
-    // Web component <product-form> (Shopify)
-    root.closest("product-form")?.querySelector('form[action*="/cart/add"]') ||
-    // Dans la section courante
-    root.closest("section")?.querySelector('form[action*="/cart/add"]') ||
-    // Fallback global (dernier recours)
-    document.querySelector('form[action*="/cart/add"]');
+  // 1) Trouve le VRAI bouton ATC et son form (on part du bouton)
+  const addBtn = root.closest('section')?.querySelector('button[name="add"], button[type="submit"]:not(.shopify-payment-button__button)') 
+              || document.querySelector('button[name="add"], button[type="submit"]:not(.shopify-payment-button__button)');
+  if (!addBtn) return;
+
+  const form = addBtn.closest('form');
   if (!form) return;
 
-  // Référence du bouton ATC (pour certains thèmes il n’a pas name="add")
-  const addBtn =
-    form.querySelector('button[name="add"]') ||
-    form.querySelector('button[type="submit"]:not(.shopify-payment-button__button)');
-
-  // --- Helpers DOM ---
-  function clickIfDifferent(el){ if (el && !el.disabled) { el.click ? el.click() : el.dispatchEvent(new MouseEvent('click',{bubbles:true})); } }
-  function setValue(el, val){
-    if (!el || el.disabled) return;
-    if (el.tagName === 'SELECT') {
-      if (el.value !== val) {
-        el.value = val;
-        el.dispatchEvent(new Event('input',{bubbles:true}));
-        el.dispatchEvent(new Event('change',{bubbles:true}));
+  // 2) Helper : garantit un unique champ name="id" dans CE form
+  function ensureIdInForm(variantId) {
+    if (!variantId) return;
+    // Si le form a un <select name="id"> natif, on le pilote en priorité
+    const sel = form.querySelector('select[name="id"]');
+    if (sel) {
+      if (String(sel.value) !== String(variantId)) {
+        sel.value = String(variantId);
+        sel.dispatchEvent(new Event('input', {bubbles: true}));
+        sel.dispatchEvent(new Event('change', {bubbles: true}));
       }
-    } else if (el.tagName === 'INPUT') {
-      if ((el.type === 'radio' || el.type === 'checkbox') && el.value === val && !el.checked) clickIfDifferent(el);
-      else if (el.type !== 'radio' && el.type !== 'checkbox' && el.value !== val) {
-        el.value = val;
-        el.dispatchEvent(new Event('input',{bubbles:true}));
-        el.dispatchEvent(new Event('change',{bubbles:true}));
-      }
-    } else if (el.tagName === 'BUTTON') {
-      if ((el.dataset.value || el.getAttribute('data-option-value')) == val) clickIfDifferent(el);
+      return;
+    }
+    // Sinon on gère un input hidden unique
+    let hid = form.querySelector('input[name="id"][data-cvs="1"]') || form.querySelector('input[name="id"]');
+    if (!hid) {
+      hid = document.createElement('input');
+      hid.type = 'hidden';
+      hid.name = 'id';
+      hid.setAttribute('data-cvs','1');
+      form.appendChild(hid);
+    }
+    if (String(hid.value) !== String(variantId)) {
+      hid.value = String(variantId);
+      form.dispatchEvent(new Event('input', {bubbles: true}));
+      form.dispatchEvent(new Event('change', {bubbles: true}));
     }
   }
 
-  function applyOption(index, value){
-    if (!value) return;
-    const i = index + 1;
-
-    // radios options[i]
-    const radios = form.querySelectorAll(`input[type="radio"][name="options[${i}]"]`);
-    if (radios.length) {
-      const target = Array.from(radios).find(r => r.value === value && !r.disabled);
-      if (target) { clickIfDifferent(target); return; }
-    }
-    // select options[i]
-    const sel = form.querySelector(`select[name="options[${i}]"]`);
-    if (sel) { setValue(sel, value); return; }
-
-    // data-index / Dawn-like
-    const groupRadios = form.querySelectorAll(`[data-index="option${i}"] input[type="radio"]`);
-    if (groupRadios.length) {
-      const t = Array.from(groupRadios).find(r => r.value === value && !r.disabled);
-      if (t) { clickIfDifferent(t); return; }
-    }
-    const groupSelect = form.querySelector(`[data-index="option${i}"] select`);
-    if (groupSelect) { setValue(groupSelect, value); return; }
-
-    // swatch divers
-    const swatchBtn = form.querySelector(
-      `[data-option-position="${i}"][data-option-value="${CSS.escape(value)}"],` +
-      `[data-option-index="${i}"][data-value="${CSS.escape(value)}"],` +
-      `button[data-value="${CSS.escape(value)}"][data-position="${i}"],` +
-      `.swatch [data-option-position="${i}"][data-value="${CSS.escape(value)}"]`
-    );
-    if (swatchBtn) { clickIfDifferent(swatchBtn); return; }
+  // 3) Récupère l’ID de la variante actuellement sélectionnée dans tes cartes
+  function getSelectedVariantId() {
+    const active = root.querySelector('.custom-variant-selector__block.selected') 
+                || root.querySelector('[data-variant-id]');
+    return active ? active.getAttribute('data-variant-id') : null;
   }
 
-  // --- Gestion propre de l'input name="id" ---
-  function ensureSingleIdInput(variantId){
-    // supprime nos anciens inputs marqués
-    form.querySelectorAll('input[name="id"][data-cvs="1"]').forEach(n => n.remove());
-
-    // récupère un input id natif s'il existe
-    let idInput = form.querySelector('input[name="id"]');
-    const idSelect = form.querySelector('select[name="id"]');
-
-    if (idSelect) {
-      if (String(idSelect.value) !== String(variantId)) {
-        idSelect.value = variantId;
-        idSelect.dispatchEvent(new Event('input',{bubbles:true}));
-        idSelect.dispatchEvent(new Event('change',{bubbles:true}));
-      }
-      return; // priorité au select natif si présent
-    }
-
-    if (!idInput) {
-      idInput = document.createElement('input');
-      idInput.type = 'hidden';
-      idInput.name = 'id';
-      idInput.setAttribute('data-cvs','1'); // marqueur pour éviter les doublons
-      form.appendChild(idInput);
-    }
-    if (String(idInput.value) !== String(variantId)) {
-      idInput.value = variantId;
-      form.dispatchEvent(new Event('input',{bubbles:true}));
-      form.dispatchEvent(new Event('change',{bubbles:true}));
-    }
+  // 4) Sécurise avant SUBMIT (capture) ET avant CLICK sur ATC
+  function preflightInjectId(e) {
+    const vid = getSelectedVariantId();
+    if (vid) ensureIdInForm(vid);
   }
 
-  function syncFromCard(card){
-    const desired = [card.dataset.o1, card.dataset.o2, card.dataset.o3].filter(Boolean);
-    desired.forEach((val, idx) => applyOption(idx, val));
+  // Écoute “submit” en capture (passe AVANT les scripts du thème)
+  form.addEventListener('submit', preflightInjectId, true);
+  // Écoute le clic sur le bouton ATC (utile si le thème remplace la soumission)
+  addBtn.addEventListener('click', preflightInjectId, true);
 
-    const variantId = card.dataset.variantId;
-    if (variantId) ensureSingleIdInput(variantId);
+  // 5) Filet de sécurité : si le thème empêche le submit, on ajoute en AJAX
+  form.addEventListener('submit', async function ajaxFallback(e){
+    // On laisse le thème agir… mais si, dans ce même tick, il a empêché l’envoi,
+    // on déclenche un ajout AJAX en dernier recours.
+    // Heuristique : si le bouton ATC reste enabled et qu’aucun id n’est présent dans formData, on force.
+    setTimeout(async () => {
+      try {
+        const fd = new FormData(form);
+        const id = fd.get('id');
+        if (!id) {
+          const vid = getSelectedVariantId();
+          if (!vid) return;
+          fd.set('id', vid);
+        }
+        // Certains thèmes postent eux-mêmes : si un mini-panier s’est ouvert, on ne fait rien.
+        // Ici, on teste la présence d’un overlay/cart drawer “ouvert” commun (si non présent, on tente l’AJAX).
+        const drawerOpen = document.querySelector('[data-cart-drawer].is-open, .cart-drawer.is-open, .js-cartDrawer.is-open');
+        if (drawerOpen) return;
 
-    // Notifie les scripts du thème
-    form.dispatchEvent(new Event('product:options:changed',{bubbles:true}));
-    document.dispatchEvent(new Event('variant:changed',{bubbles:true}));
-  }
+        // Fallback: ajout AJAX
+        const res = await fetch('/cart/add.js', { method: 'POST', body: fd, headers: { 'Accept': 'application/json' }});
+        if (!res.ok) throw new Error('AJAX add failed');
+        const line = await res.json();
+        // Tentatives d’ouverture du tiroir (selon conventions usuelles)
+        document.dispatchEvent(new CustomEvent('cart:refresh', {detail:{source:'cvs'}}));
+        document.dispatchEvent(new CustomEvent('cart:open', {detail:{source:'cvs'}}));
+        document.body.classList.add('cart-open'); // certains thèmes lisent cette classe
+        // Dernier recours : cliquer un éventuel bouton d’ouverture
+        const opener = document.querySelector('[data-cart-drawer-open], [data-action="open-cart"], .js-openCartDrawer');
+        if (opener) opener.click();
+      } catch(err) { console.warn('[CVS] Fallback AJAX error:', err); }
+    }, 0);
+  }, { once: true }); // on attache une seule fois
 
-  // --- Clicks sur les cartes ---
-  const blocks = root.querySelectorAll('[data-variant-id], .custom-variant-selector__block');
-  blocks.forEach((block) => {
-    block.addEventListener('click', function(e){
-      // état visuel
-      blocks.forEach(b => b.classList && b.classList.remove('selected'));
-      this.classList && this.classList.add('selected');
-      const r = this.querySelector('input[type="radio"]'); if (r) r.checked = true;
-
-      // synchro
-      syncFromCard(this);
-    });
-  });
-
-  // --- Init visuelle selon l'ID courant du form ---
-  const idField = form.querySelector('select[name="id"], input[name="id"]');
-  const currentId = (idField && idField.value) || "{{ product.selected_or_first_available_variant.id }}";
-  const initial = Array.from(blocks).find(b => (b.getAttribute('data-variant-id')||'') === String(currentId));
-  if (initial) {
-    blocks.forEach(b => b.classList && b.classList.remove('selected'));
-    initial.classList && initial.classList.add('selected');
-    const ri = initial.querySelector('input[type="radio"]'); if (ri) ri.checked = true;
-    ensureSingleIdInput(currentId);
-  }
-
-  // --- Ceinture et bretelles : juste avant la soumission, on garantit l'ID ---
-  form.addEventListener('submit', function(e){
-    const active = root.querySelector('.custom-variant-selector__block.selected') || blocks[0];
-    const vid = active?.getAttribute('data-variant-id');
-    if (vid) ensureSingleIdInput(vid);
-    // Optionnel debug :
-    // console.log('[CVS] submit with id=', form.querySelector('input[name="id"], select[name="id"]')?.value);
-  }, true);
+  // 6) À l’initialisation, aligne le form sur la carte déjà “selected”
+  const initialVid = getSelectedVariantId();
+  if (initialVid) ensureIdInForm(initialVid);
 });
 </script>
+
 
