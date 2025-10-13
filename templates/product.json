@@ -557,7 +557,7 @@
         "row_d8F9Cj": {
           "type": "row",
           "settings": {
-            "benefit": "Benefit",
+            "benefit": "Longue tenue",
             "us": true,
             "others": false
           }
@@ -565,7 +565,7 @@
         "row_PHgaKD": {
           "type": "row",
           "settings": {
-            "benefit": "Benefit",
+            "benefit": "Ingrédient naturel",
             "us": true,
             "others": false
           }
@@ -573,7 +573,15 @@
         "row_iHGnDR": {
           "type": "row",
           "settings": {
-            "benefit": "Benefit",
+            "benefit": "Éveille le désir",
+            "us": true,
+            "others": false
+          }
+        },
+        "row_zzXddd": {
+          "type": "row",
+          "settings": {
+            "benefit": "Rareté de la fragrance",
             "us": true,
             "others": false
           }
@@ -582,7 +590,8 @@
       "block_order": [
         "row_d8F9Cj",
         "row_PHgaKD",
-        "row_iHGnDR"
+        "row_iHGnDR",
+        "row_zzXddd"
       ],
       "name": "Comparison table",
       "settings": {
