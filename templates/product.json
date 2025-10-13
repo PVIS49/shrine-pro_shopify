@@ -442,34 +442,22 @@
         "heading_9Dzgqd": {
           "type": "heading",
           "settings": {
-            "title": "Image banner",
+            "title": "Le pouvoir attractif de Parfum Vaillant",
             "title_highlight_color": "#6D388B",
-            "heading_size": "h1"
+            "heading_size": "h2"
           }
         },
         "text_tkcBCw": {
           "type": "text",
           "settings": {
-            "text": "Give customers details about the banner image(s) or content on the template.",
+            "text": "Dès les premières notes, Vaillant déclenche une réaction instinctive. Notre parfum réveille l’attirance, attise le désir et capte l’attention de celles qui vous entourent. Sa tenue longue durée laisse une trace claire : vous êtes là, et vous marquez les esprits. À ce niveau, ce n’est plus une question de hasard. C’est de l’impact.",
             "text_style": "body"
-          }
-        },
-        "buttons_MHGzj7": {
-          "type": "buttons",
-          "settings": {
-            "button_label_1": "Button label",
-            "button_link_1": "",
-            "button_style_secondary_1": false,
-            "button_label_2": "Button label",
-            "button_link_2": "",
-            "button_style_secondary_2": false
           }
         }
       },
       "block_order": [
         "heading_9Dzgqd",
-        "text_tkcBCw",
-        "buttons_MHGzj7"
+        "text_tkcBCw"
       ],
       "name": "t:sections.image-banner.presets.name",
       "settings": {
