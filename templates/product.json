@@ -479,6 +479,58 @@
         "show_text_below": true
       }
     },
+    "image_with_text_TtxikA": {
+      "type": "image-with-text",
+      "blocks": {
+        "heading_bULN6f": {
+          "type": "heading",
+          "settings": {
+            "title": "Pouvoir attractif de Parfum Vaillant",
+            "title_highlight_color": "#6D388B",
+            "heading_size": "h2"
+          }
+        },
+        "text_grYmwC": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Dès les premières notes, Vaillant déclenche une réaction instinctive. Notre parfum réveille l’attirance, attise le désir et capte l’attention de celles qui vous entourent. Sa tenue longue durée laisse une trace claire : vous êtes là, et vous marquez les esprits. À ce niveau, ce n’est plus une question de hasard. C’est de l’impact.</p>",
+            "text_style": "body"
+          }
+        }
+      },
+      "block_order": [
+        "heading_bULN6f",
+        "text_grYmwC"
+      ],
+      "name": "t:sections.image-with-text.presets.name",
+      "settings": {
+        "display_id": false,
+        "visibility": "always-display",
+        "image": "shopify://shop_images/Bouteille_parfum_Vaillant_dans_l_eau.webp",
+        "height": "adapt",
+        "content_layout": "no-overlap",
+        "color_scheme": "background-1",
+        "section_color_scheme": "background-1",
+        "desktop_image_width": "medium",
+        "layout": "image_first",
+        "desktop_content_position": "top",
+        "desktop_content_alignment": "center",
+        "mobile_full_media_width": false,
+        "mobile_direction": "normal",
+        "mobile_image_quanlity": "2",
+        "mobile_content_alignment": "center",
+        "padding_top": 36,
+        "padding_bottom": 36,
+        "custom_colors_background": "#2E2A39",
+        "custom_gradient_background": "",
+        "custom_colors_text": "#FFFFFF",
+        "custom_colors_solid_button_background": "#dd1d1d",
+        "custom_colors_solid_button_text": "#ffffff",
+        "custom_colors_outline_button": "#dd1d1d",
+        "custom_section_colors_background": "#FFFFFF",
+        "custom_section_gradient_background": ""
+      }
+    },
     "related-products": {
       "type": "related-products",
       "disabled": true,
@@ -599,6 +651,7 @@
     "main",
     "rich_text_3xDhQz",
     "image_banner_JwPrNT",
+    "image_with_text_TtxikA",
     "related-products",
     "55bd100e-3bbd-426c-a5cf-eed7b2a3706f",
     "b321ab88-2b59-4dba-bade-54885c874ca5"
