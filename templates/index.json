@@ -199,6 +199,13 @@
             "question": "Où livre Parfum Vaillant ?",
             "answer": "<p>Nous expédions partout en France.</p>"
           }
+        },
+        "text_PCy8Qg": {
+          "type": "text",
+          "settings": {
+            "question": "Quelle contenance est faite pour vous ?",
+            "answer": "<p>Le flacon de 50 ml permet une utilisation quotidienne d'environ 5 à 6 mois.<br/>Pour ceux qui préfèrent ne pas se soucier du réassort, le format 100 ml offre une meilleure tenue sur la durée, avec environ un an d’usage régulier.</p>"
+          }
         }
       },
       "block_order": [
@@ -206,7 +213,8 @@
         "text_bDU8aE",
         "text_GCAcfp",
         "text_4YCiX8",
-        "text_JUkJ8y"
+        "text_JUkJ8y",
+        "text_PCy8Qg"
       ],
       "name": "Faq",
       "settings": {
