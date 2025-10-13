@@ -136,81 +136,153 @@
 </style>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const root = document.getElementById("cvs-{{ section.id }}-{{ block.id }}") 
-              || document.querySelector(".custom-variant-selector");
-    if (!root) return;
+document.addEventListener("DOMContentLoaded", function () {
+  const root = document.getElementById("cvs-{{ section.id }}-{{ block.id }}") 
+            || document.querySelector(".custom-variant-selector");
+  if (!root) return;
 
-    const form =
-      document.getElementById("product-form-{{ section.id }}") ||
-      root.closest("section")?.querySelector('form[action*="/cart/add"]');
-    if (!form) return;
+  const form =
+    document.getElementById("product-form-{{ section.id }}") ||
+    root.closest("section")?.querySelector('form[action*="/cart/add"]') ||
+    document.querySelector('form[action*="/cart/add"]');
+  if (!form) return;
 
-    const variantSelect = form.querySelector('select[name="id"]');
-    const variantInput  = form.querySelector('input[name="id"]');
+  // Bouton ATC (on NE l’intercepte PLUS)
+  const addBtn =
+    form.querySelector('button[name="add"]') ||
+    form.querySelector('button[type="submit"]:not(.shopify-payment-button__button)');
 
-    function applyOptionsFromCard(card){
-      const desired = [card.dataset.o1, card.dataset.o2, card.dataset.o3].filter(Boolean);
-
-      // 1) radios "options[1]" / "options[2]" / …
-      const radios = Array.from(form.querySelectorAll('input[type="radio"][name^="options["]'));
-      if (radios.length) {
-        // groupe par name et clique la bonne valeur
-        const groups = {};
-        radios.forEach(r => (groups[r.name] ||= []).push(r));
-        Object.values(groups).forEach((inputs, idx) => {
-          const want = desired[idx];
-          if (!want) return;
-          const target = inputs.find(i => i.value === want && !i.disabled);
-          if (target && !target.checked) target.click(); // laisse le thème gérer
-        });
+  // 1) Helpers: clique/positionne TOUT ce que les thèmes utilisent comme options
+  function clickIfDifferent(el){ 
+    if (el && !el.disabled) { el.click ? el.click() : (el.dispatchEvent(new MouseEvent('click', {bubbles:true}))); }
+  }
+  function setValue(el, val){
+    if (!el || el.disabled) return;
+    if (el.tagName === 'SELECT') {
+      if (el.value !== val) {
+        el.value = val;
+        el.dispatchEvent(new Event('input', {bubbles:true}));
+        el.dispatchEvent(new Event('change', {bubbles:true}));
       }
+    } else if (el.tagName === 'INPUT') {
+      if (el.type === 'radio' || el.type === 'checkbox') {
+        if (el.value === val && !el.checked) clickIfDifferent(el);
+      } else {
+        if (el.value !== val) {
+          el.value = val;
+          el.dispatchEvent(new Event('input', {bubbles:true}));
+          el.dispatchEvent(new Event('change', {bubbles:true}));
+        }
+      }
+    } else if (el.tagName === 'BUTTON') {
+      // boutons de swatch
+      if ((el.dataset.value || el.getAttribute('data-option-value')) == val) clickIfDifferent(el);
+    }
+  }
 
-      // 2) selects "options[1]" / …
-      const selects = Array.from(form.querySelectorAll('select[name^="options["]'));
-      if (selects.length) {
-        selects.forEach((sel, idx) => {
-          const want = desired[idx];
-          if (!want) return;
-          if (sel.value !== want) {
-            sel.value = want;
-            sel.dispatchEvent(new Event('change', { bubbles: true }));
-            sel.dispatchEvent(new Event('input',  { bubbles: true }));
-          }
-        });
+  // Essaie un maximum de schémas d’options (radios, selects, boutons de swatch…)
+  function applyOption(index, value){
+    if (!value) return;
+    const i = index + 1; // options[1..3]
+
+    // radios classiques options[i]
+    const radios = form.querySelectorAll(`input[type="radio"][name="options[${i}]"]`);
+    if (radios.length) {
+      const target = Array.from(radios).find(r => r.value === value && !r.disabled);
+      if (target) { clickIfDifferent(target); return; }
+    }
+
+    // selects classiques options[i]
+    const sel = form.querySelector(`select[name="options[${i}]"]`);
+    if (sel) { setValue(sel, value); return; }
+
+    // schémas "data-index" (Dawn-like)
+    const byIndexInput = form.querySelectorAll(`[data-index="option${i}"] input[type="radio"]`);
+    if (byIndexInput.length) {
+      const target = Array.from(byIndexInput).find(r => r.value === value && !r.disabled);
+      if (target) { clickIfDifferent(target); return; }
+    }
+    const byIndexSelect = form.querySelector(`[data-index="option${i}"] select`);
+    if (byIndexSelect) { setValue(byIndexSelect, value); return; }
+
+    // boutons de swatch (divers thèmes)
+    const swatchBtn = form.querySelector(
+      `[data-option-position="${i}"][data-option-value="${CSS.escape(value)}"],` +
+      `[data-option-index="${i}"][data-value="${CSS.escape(value)}"],` +
+      `button[data-value="${CSS.escape(value)}"][data-position="${i}"],` +
+      `.swatch [data-option-position="${i}"][data-value="${CSS.escape(value)}"]`
+    );
+    if (swatchBtn) { clickIfDifferent(swatchBtn); return; }
+
+    // Fallback ultra-générique : bouton/élément ayant le texte = value dans un groupe option i
+    const group = form.querySelector(`[data-index="option${i}"], [data-option-position="${i}"], .product-form__input:nth-of-type(${i})`);
+    if (group) {
+      const candidate = Array.from(group.querySelectorAll('button, [role="button"], [data-value], [data-option-value]'))
+        .find(b => (b.dataset.value||b.dataset.optionValue||b.textContent||'').trim() === value);
+      if (candidate) { clickIfDifferent(candidate); }
+    }
+  }
+
+  function syncFromCard(card){
+    const desired = [card.dataset.o1, card.dataset.o2, card.dataset.o3].filter(Boolean);
+    desired.forEach((val, idx) => applyOption(idx, val));
+
+    // Assure un champ name="id" correct si le thème en a besoin
+    const idSelect = form.querySelector('select[name="id"]');
+    const idInput  = form.querySelector('input[name="id"]');
+    const variantId = card.dataset.variantId;
+
+    if (variantId) {
+      if (idSelect && idSelect.value !== variantId) {
+        idSelect.value = variantId;
+        idSelect.dispatchEvent(new Event('input', {bubbles:true}));
+        idSelect.dispatchEvent(new Event('change', {bubbles:true}));
+      } else if (idInput) {
+        if (idInput.value !== variantId) {
+          idInput.value = variantId;
+          form.dispatchEvent(new Event('input', {bubbles:true}));
+          form.dispatchEvent(new Event('change', {bubbles:true}));
+        }
+      } else {
+        const hidden = document.createElement('input');
+        hidden.type = 'hidden';
+        hidden.name = 'id';
+        hidden.value = variantId;
+        form.appendChild(hidden);
       }
     }
 
-    // Click carte => synchro options natives + UI locale
-    const blocks = root.querySelectorAll(".custom-variant-selector__block");
-    blocks.forEach((block) => {
-      block.addEventListener("click", function () {
-        // UI locale
-        blocks.forEach((b) => b.classList.remove("selected"));
-        this.classList.add("selected");
-        const radio = this.querySelector('input[type="radio"]');
-        if (radio) radio.checked = true;
+    // ping aux scripts thème
+    form.dispatchEvent(new Event('product:options:changed', {bubbles:true}));
+    document.dispatchEvent(new Event('variant:changed', {bubbles:true}));
+  }
 
-        // Aligne les options natives du thème
-        applyOptionsFromCard(this);
+  // 2) Clicks sur tes cartes
+  const blocks = root.querySelectorAll('[data-variant-id], .custom-variant-selector__block');
+  blocks.forEach((block) => {
+    block.addEventListener('click', function(){
+      // état visuel
+      blocks.forEach(b => b.classList && b.classList.remove('selected'));
+      this.classList && this.classList.add('selected');
+      const r = this.querySelector('input[type="radio"]'); if (r) r.checked = true;
 
-        // Le thème déterminera la variante et mettra à jour select/input [name="id"]
-        // On n’empêche pas le submit ni on ne remplace le comportement ATC.
-      });
+      // synchro native
+      syncFromCard(this);
     });
-
-    // Init UI locale selon l’état actuel
-    const currentId =
-      (variantSelect && variantSelect.value) ||
-      (variantInput && variantInput.value) ||
-      "{{ product.selected_or_first_available_variant.id }}";
-    const initialCard = root.querySelector('[data-variant-id="'+ String(currentId) +'"]');
-    if (initialCard) {
-      blocks.forEach((b) => b.classList.remove("selected"));
-      initialCard.classList.add("selected");
-      const r = initialCard.querySelector('input[type="radio"]');
-      if (r) r.checked = true;
-    }
   });
-</script>
 
+  // 3) Init visuelle alignée sur l’état actuel
+  const idField = form.querySelector('select[name="id"], input[name="id"]');
+  const currentId = (idField && idField.value) || "{{ product.selected_or_first_available_variant.id }}";
+  const initial = Array.from(blocks).find(b => (b.getAttribute('data-variant-id')||'') === String(currentId));
+  if (initial) {
+    blocks.forEach(b => b.classList && b.classList.remove('selected'));
+    initial.classList && initial.classList.add('selected');
+    const ri = initial.querySelector('input[type="radio"]'); if (ri) ri.checked = true;
+  }
+
+  // 4) NE TOUCHE PAS AU SUBMIT/ATC : on laisse le thème poster le form
+  // Si ATC ne réagit toujours pas, ajoute temporairement:
+  // window.__cvs_debug = true; et regarde la console pour voir quels sélecteurs ont matché.
+});
+</script>
