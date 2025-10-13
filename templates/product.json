@@ -651,6 +651,40 @@
         "custom_cards_colors_text": "#2e2a39"
       }
     },
+    "ss_simple_faq_VRFQeQ": {
+      "type": "ss-simple-faq",
+      "blocks": {
+        "text_3bwra7": {
+          "type": "text",
+          "settings": {
+            "question": "Quelles notes olfactives possède Parfum Vaillant ?",
+            "answer": "<p>Vaillant combine des notes de bois de oud, de musc, de cuir et de vétiver. Ce mélange crée une signature olfactive puissante, masculine et élégante. Le tout est renforcé par une alliance secrète d’essences qui donne au parfum sa touche unique et irrésistible.</p>"
+          }
+        },
+        "text_UTHbyU": {
+          "type": "text",
+          "settings": {
+            "question": "Question text",
+            "answer": "<p>Answer richtext</p>"
+          }
+        }
+      },
+      "block_order": [
+        "text_3bwra7",
+        "text_UTHbyU"
+      ],
+      "name": "Faq",
+      "settings": {
+        "heading": "Les questions fréquentes sur Parfum Vaillant",
+        "icon_color": "#fff",
+        "hover_color": "#EFEFEF",
+        "question_color": "#fff",
+        "background_color": "#1a1a1a",
+        "answer_color": "#000",
+        "answer_bg_color": "#fff",
+        "questions-font-size": 1.5
+      }
+    },
     "b321ab88-2b59-4dba-bade-54885c874ca5": {
       "type": "section-divider",
       "settings": {
@@ -674,6 +708,7 @@
     "results_nWke9k",
     "related-products",
     "55bd100e-3bbd-426c-a5cf-eed7b2a3706f",
+    "ss_simple_faq_VRFQeQ",
     "b321ab88-2b59-4dba-bade-54885c874ca5"
   ]
 }
