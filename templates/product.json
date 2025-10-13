@@ -650,48 +650,10 @@
     "meditrust_Rh3Mpw": {
       "type": "meditrust",
       "blocks": {
-        "list_item_iVqDMR": {
-          "type": "list_item",
-          "settings": {
-            "text": "Endormez-vous plus rapidement"
-          }
-        },
-        "list_item_MDHmf4": {
-          "type": "list_item",
-          "settings": {
-            "text": "Relaxation & Sommeil réparateur"
-          }
-        },
-        "list_item_3WJ8KJ": {
-          "type": "list_item",
-          "settings": {
-            "text": "Réveillez-vous reposé"
-          }
-        },
-        "list_item_Kh3QR6": {
-          "type": "list_item",
-          "settings": {
-            "text": "À base de plantes"
-          }
-        },
-        "table_row_m4aP3p": {
-          "type": "table_row",
-          "settings": {
-            "row_heading": "Dosage optimisé",
-            "first_column": "",
-            "first_column_icon": "check",
-            "second_column": "",
-            "second_column_icon": "cross",
-            "third_column": "",
-            "third_column_icon": "none",
-            "four_column": "",
-            "four_column_icon": "none"
-          }
-        },
         "table_row_CWEznN": {
           "type": "table_row",
           "settings": {
-            "row_heading": "À base de plantes",
+            "row_heading": "Longue tenue",
             "first_column": "",
             "first_column_icon": "check",
             "second_column": "",
@@ -705,7 +667,7 @@
         "table_row_JchrCq": {
           "type": "table_row",
           "settings": {
-            "row_heading": "Faible en sucre",
+            "row_heading": "Ingrédient naturel",
             "first_column": "",
             "first_column_icon": "check",
             "second_column": "",
@@ -719,7 +681,7 @@
         "table_row_xbT9Hx": {
           "type": "table_row",
           "settings": {
-            "row_heading": "Ingrédients simples",
+            "row_heading": "Éveille le désir",
             "first_column": "",
             "first_column_icon": "check",
             "second_column": "",
@@ -733,21 +695,7 @@
         "table_row_4yyenE": {
           "type": "table_row",
           "settings": {
-            "row_heading": "Testé par des tiers",
-            "first_column": "",
-            "first_column_icon": "check",
-            "second_column": "",
-            "second_column_icon": "cross",
-            "third_column": "",
-            "third_column_icon": "none",
-            "four_column": "",
-            "four_column_icon": "none"
-          }
-        },
-        "table_row_gBxk86": {
-          "type": "table_row",
-          "settings": {
-            "row_heading": "Goût délicieux",
+            "row_heading": "Rareté de la fragrance",
             "first_column": "",
             "first_column_icon": "check",
             "second_column": "",
@@ -760,16 +708,10 @@
         }
       },
       "block_order": [
-        "list_item_iVqDMR",
-        "list_item_MDHmf4",
-        "list_item_3WJ8KJ",
-        "list_item_Kh3QR6",
-        "table_row_m4aP3p",
         "table_row_CWEznN",
         "table_row_JchrCq",
         "table_row_xbT9Hx",
-        "table_row_4yyenE",
-        "table_row_gBxk86"
+        "table_row_4yyenE"
       ],
       "name": "Meditrust - Compare Table",
       "settings": {
