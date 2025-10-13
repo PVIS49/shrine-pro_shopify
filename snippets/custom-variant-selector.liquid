@@ -201,48 +201,74 @@
 
     // --- Fallback robuste : forcer /cart/add.js pour le bouton "Ajouter au panier"
     if (addBtn) {
-      addBtn.addEventListener('click', function(e){
-        // Si le thème gère déjà en AJAX et respecte name="id", laissez faire
-        // Sinon, on force ici un add.js
-        e.preventDefault();
-        const vid =
-          (variantSelect && variantSelect.value) ||
-          (variantInput && variantInput.value) ||
-          selectedVariantId;
+    addBtn.addEventListener('click', function (e) {
+      e.preventDefault();
 
-        if (!vid) { console.warn('[cvs] Aucun variantId sélectionné'); return; }
+      // 1) S’assurer que name="id" porte bien la variante choisie
+      const vid =
+        (variantSelect && variantSelect.value) ||
+        (variantInput && variantInput.value) ||
+        selectedVariantId;
 
-        const quantity = Number(qtyInput?.value || 1);
+      if (!vid) { console.warn('[cvs] Aucun variantId'); return; }
 
-        addBtn.disabled = true;
-        addBtn.setAttribute('aria-busy', 'true');
+      // si select existe, on le force pour que le form soit cohérent
+      if (variantSelect && String(variantSelect.value) !== String(vid)) {
+        variantSelect.value = String(vid);
+        variantSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        variantSelect.dispatchEvent(new Event('input',  { bubbles: true }));
+      } else if (!variantSelect) {
+        // s'il n'y a pas de select, on s'assure d'avoir un input hidden name="id"
+        let idField = variantInput || form.querySelector('input[name="id"]');
+        if (!idField) {
+          idField = document.createElement('input');
+          idField.type = 'hidden';
+          idField.name = 'id';
+          form.appendChild(idField);
+        }
+        idField.value = String(vid);
+      }
 
-        fetch('/cart/add.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify({ id: String(vid), quantity: quantity })
-        })
-        .then(r => r.json())
-        .then(data => {
-          // Tente d’ouvrir / rafraîchir le mini-panier si le thème expose un trigger
-          document.dispatchEvent(new CustomEvent('cart:refresh', { detail: data }));
-          const drawerToggle = document.querySelector('[data-cart-drawer-toggle], [data-open-cart], .header__icon--cart');
-          if (drawerToggle) drawerToggle.click();
-          // À défaut, redirige vers le panier (sûr)
-          // window.location.href = '/cart';
-        })
-        .catch(err => {
-          console.error('[cvs] add.js error', err);
-          // Fallback ultime : soumettre le form natif
-          form.submit();
-        })
-        .finally(() => {
-          addBtn.disabled = false;
-          addBtn.removeAttribute('aria-busy');
-        });
-      }, { capture: true });
-    }
+      // 2) Soumission AJAX du formulaire produit (embarque selling_plan, properties, qty, etc.)
+      const fd = new FormData(form);
+      // (certains thèmes utilisent un bouton qty séparé)
+      if (!fd.get('quantity')) {
+        const qty = form.querySelector('input[name="quantity"]');
+        if (qty) fd.set('quantity', qty.value || '1');
+      }
 
-    // "Acheter maintenant" reste géré par Shopify Payments → on ne bloque pas buyNowBtn
-  });
+      addBtn.disabled = true;
+      addBtn.setAttribute('aria-busy', 'true');
+
+      fetch((form.action || '/cart/add') + '.js', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: fd
+      })
+      .then(async (r) => {
+        if (!r.ok) {
+          const err = await r.json().catch(() => ({}));
+          throw new Error(err.description || ('Add to cart failed (' + r.status + ')'));
+        }
+        return r.json();
+      })
+      .then((data) => {
+        // Ouvre/rafraîchit le tiroir
+        document.dispatchEvent(new CustomEvent('cart:refresh', { detail: data }));
+        const drawerToggle = document.querySelector('[data-cart-drawer-toggle], [data-open-cart], .header__icon--cart');
+        if (drawerToggle) drawerToggle.click();
+        // Sinon, redirigez vers /cart si vous préférez :
+        // window.location.href = '/cart';
+      })
+      .catch((err) => {
+        console.error('[cvs] add via form failed:', err);
+        // Fallback ultime : soumettre le form normalement
+        form.submit();
+      })
+      .finally(() => {
+        addBtn.disabled = false;
+        addBtn.removeAttribute('aria-busy');
+      });
+    }, { capture: true }); // capture pour passer avant les handlers du thème
+  }
 </script>
