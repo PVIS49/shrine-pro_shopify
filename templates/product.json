@@ -89,6 +89,10 @@
             "margin_bottom": 15
           }
         },
+        "custom_variant_selector_bXXNWA": {
+          "type": "custom_variant_selector",
+          "settings": {}
+        },
         "custom_liquid_eyTAEn": {
           "type": "custom_liquid",
           "settings": {
@@ -345,6 +349,7 @@
         "a6eb81db-40e4-43e0-972f-32db010a4a56",
         "price",
         "5fcc0428-e768-4cb7-bea3-eb0274198dd1",
+        "custom_variant_selector_bXXNWA",
         "custom_liquid_eyTAEn",
         "04ba004e-2f54-4936-8b1c-8bcadf6573f6",
         "buy_buttons",
