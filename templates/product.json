@@ -621,7 +621,7 @@
         "others_mobile_logo_width": 60,
         "checkmark_style": "regular",
         "checkmark_color": "#53AF01",
-        "checkmark_bg_color": "#53AF01",
+        "checkmark_bg_color": "#dbdbdb",
         "x_style": "regular",
         "x_color": "#121212",
         "x_bg_color": "#DBDBDB",
