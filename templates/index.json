@@ -192,13 +192,21 @@
             "question": "Quels sont les délais d'expédition ?",
             "answer": "<p>Votre commande est préparée et expédiée dans un délai de <strong>1 à 2 jours ouvrés</strong> après sa validation.</p><p>Une fois votre colis expédié, nous vous transmettrons un <strong>numéro de suivi</strong> qui vous permettra de suivre votre livraison en temps réel.</p>"
           }
+        },
+        "text_JUkJ8y": {
+          "type": "text",
+          "settings": {
+            "question": "Où livre Parfum Vaillant ?",
+            "answer": "<p>Nous expédions partout en France.</p>"
+          }
         }
       },
       "block_order": [
         "text_Ttww39",
         "text_bDU8aE",
         "text_GCAcfp",
-        "text_4YCiX8"
+        "text_4YCiX8",
+        "text_JUkJ8y"
       ],
       "name": "Faq",
       "settings": {
