@@ -220,11 +220,11 @@
       "settings": {
         "heading": "Parfum Vaillant répond à vos questions",
         "icon_color": "#fff",
-        "hover_color": "#EFEFEF",
+        "hover_color": "#efefef",
         "question_color": "#fff",
         "background_color": "#1a1a1a",
         "answer_color": "#000",
-        "answer_bg_color": "#fff",
+        "answer_bg_color": "#efefef",
         "questions-font-size": 1.5
       }
     },
