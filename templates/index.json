@@ -185,12 +185,20 @@
             "question": "Est-ce que Vaillant aide vraiment à séduire ?",
             "answer": "<p>Oui, c’est précisément sa promesse. Chaque note a été pensée pour provoquer une réaction, créer de l’attirance et laisser une impression marquante. Ceux qui l’essayent en voient vite les effets.</p>"
           }
+        },
+        "text_4YCiX8": {
+          "type": "text",
+          "settings": {
+            "question": "Quels sont les délais d'expédition ?",
+            "answer": "<p>Votre commande est préparée et expédiée dans un délai de <strong>1 à 2 jours ouvrés</strong> après sa validation.</p><p>Une fois votre colis expédié, nous vous transmettrons un <strong>numéro de suivi</strong> qui vous permettra de suivre votre livraison en temps réel.</p>"
+          }
         }
       },
       "block_order": [
         "text_Ttww39",
         "text_bDU8aE",
-        "text_GCAcfp"
+        "text_GCAcfp",
+        "text_4YCiX8"
       ],
       "name": "Faq",
       "settings": {
