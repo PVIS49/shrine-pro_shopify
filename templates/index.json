@@ -57,6 +57,66 @@
         "accessibility_info": "Slideshow about our brand"
       }
     },
+    "image_with_text_ewhUGq": {
+      "type": "image-with-text",
+      "blocks": {
+        "heading_tDT9Dh": {
+          "type": "heading",
+          "settings": {
+            "title": "UN PARFUM PAS COMME LES AUTRES",
+            "title_highlight_color": "#6D388B",
+            "heading_size": "h1"
+          }
+        },
+        "text_76MPMX": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Une alliance audacieuse de musc, d’ambre et de cuir, relevée par une touche mystérieuse issue de notre formule exclusive. C'est tout ce dont notre fragrance à besoin pour marquer les esprits autour de vous.</p>",
+            "text_style": "body"
+          }
+        },
+        "button_gQnC3r": {
+          "type": "button",
+          "settings": {
+            "button_label": "Découvrir notre fragrance",
+            "button_link": "shopify://products/parfum-vaillant"
+          }
+        }
+      },
+      "block_order": [
+        "heading_tDT9Dh",
+        "text_76MPMX",
+        "button_gQnC3r"
+      ],
+      "name": "t:sections.image-with-text.presets.name",
+      "settings": {
+        "display_id": false,
+        "visibility": "always-display",
+        "image": "shopify://shop_images/Bouteille_de_parum_Vaillant_avec_boite.webp",
+        "height": "adapt",
+        "content_layout": "no-overlap",
+        "color_scheme": "background-1",
+        "section_color_scheme": "background-1",
+        "desktop_image_width": "medium",
+        "layout": "image_first",
+        "desktop_content_position": "middle",
+        "desktop_content_alignment": "center",
+        "mobile_full_media_width": false,
+        "mobile_direction": "normal",
+        "mobile_image_quanlity": "2",
+        "mobile_content_alignment": "center",
+        "padding_top": 36,
+        "padding_bottom": 36,
+        "custom_colors_background": "#2E2A39",
+        "custom_gradient_background": "",
+        "custom_colors_text": "#FFFFFF",
+        "custom_colors_solid_button_background": "#dd1d1d",
+        "custom_colors_solid_button_text": "#ffffff",
+        "custom_colors_outline_button": "#dd1d1d",
+        "custom_section_colors_background": "#FFFFFF",
+        "custom_section_gradient_background": ""
+      }
+    },
     "press_BVn679": {
       "type": "press",
       "blocks": {
@@ -345,6 +405,7 @@
   },
   "order": [
     "cfca4268-6358-426c-98ab-d292aeef11e5",
+    "image_with_text_ewhUGq",
     "press_BVn679",
     "0f1fc9e4-bc4c-4052-9747-62d1f8472caa",
     "ss_simple_faq_9QAQqX",
