@@ -126,6 +126,38 @@
   border:2px solid #000;position:absolute;top:10px;right:10px;
 }
 .custom-variant-selector__block.selected .variant-indicator{background:#000}
+/* === Compact mode pour les cartes variantes === */
+.custom-variant-selector { gap: 8px; }                       /* moins d'espace entre les cartes */
+.custom-variant-selector__block { padding: 8px; }            /* moins de padding interne */
+
+.custom-variant-selector .variant-card {
+  height: 110px;                                             /* ↓ hauteur globale (ex 110–120px) */
+}
+
+.custom-variant-selector .variant-card img.img-small { height: 38px; }  /* avant 50px */
+.custom-variant-selector .variant-card img.img-large { height: 56px; }  /* avant 70px */
+
+.custom-variant-selector .variant-label { 
+  font-size: 13px; 
+  line-height: 1.2; 
+  margin-top: 4px;
+}
+
+.custom-variant-selector .variant-price { 
+  font-size: 13px; 
+  margin-top: 2px; 
+  gap: 4px; 
+}
+.custom-variant-selector .old-price { font-size: 13px; }
+
+.custom-variant-selector .variant-badge {
+  font-size: 10px; 
+  padding: 3px 8px; 
+  top: 4px;
+}
+
+.custom-variant-selector .custom-variant-selector__block { border-radius: 8px; } /* un peu moins rond */
+
 </style>
 
 <script>
