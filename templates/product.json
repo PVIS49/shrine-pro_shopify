@@ -288,14 +288,14 @@
         "de158e68-5d0d-4819-a625-e2dabdff87d1": {
           "type": "collapsible_tab",
           "settings": {
-            "heading": "Collapsible row",
+            "heading": "Notre parfum",
             "heading_size": "medium",
             "icon": "check_box",
             "filled_icon": false,
             "collapse_icon": "carret",
             "display_top_border": true,
             "open": false,
-            "content": "",
+            "content": "<p><strong>Tenue de 8 à 12 heures sans relâche. Une simple vaporisation de Vaillant suffit à éveiller les désirs les plus enfouis</strong>.<br/>Ce n’est pas un parfum comme les autres. C’est une empreinte sensorielle, un élixir de caractère qui laisse derrière lui un sillage envoûtant et durable.<br/>Impossible de l’oublier. Inutile de résister.</p>",
             "page": "",
             "margin_top": 24,
             "margin_bottom": 0
