@@ -72,8 +72,8 @@
           "settings": {
             "text": "Bienvenu dans l'univers Parfum Vaillant",
             "text_alignment": "center",
-            "mobile_text_size": 8,
-            "desktop_text_size": 20,
+            "mobile_text_size": 12,
+            "desktop_text_size": 15,
             "icon": "",
             "filled_icon": false,
             "mobile_icon_size": 20,
