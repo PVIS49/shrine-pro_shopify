@@ -1,0 +1,148 @@
+<div class="custom-variant-selector">
+  {% assign displayed_variants = product.variants | slice: 0, 3 %}
+
+  {% for variant in displayed_variants %}
+    <label class="custom-variant-selector__block{% if forloop.first %} selected{% endif %}" data-variant-id="{{ variant.id }}">
+      <span class="variant-indicator"></span>
+      <input type="radio" name="custom_variant_id" class="hidden-radio" value="{{ variant.id }}" {% if forloop.first %}checked{% endif %}>
+      <div class="variant-card">
+        {% if forloop.index == 2 %}
+  <div class="variant-badge">Économisez 50€</div>
+{% endif %}
+
+    {% if variant.metafields.custom.custom_image %}
+  <img
+    src="{{ variant.metafields.custom.custom_image | image_url: width: 300 }}"
+    alt="{{ variant.title }}"
+    class="{% if forloop.index == 1 %}img-small{% else %}img-large{% endif %}">
+{% elsif variant.featured_media %}
+  <img
+    src="{{ variant.featured_media.preview_image | image_url: width: 300 }}"
+    alt="{{ variant.title }}"
+    class="{% if forloop.index == 1 %}img-small{% else %}img-large{% endif %}">
+{% endif %}
+
+
+        <p class="variant-label">{{ variant.title }}</p>
+<div class="variant-price">
+  {% if variant.compare_at_price > variant.price %}
+    <span class="old-price">{{ variant.compare_at_price | money }}</span>
+  {% endif %}
+  <span class="current-price">{{ variant.price | money }}</span>
+</div>
+      </div>
+    </label>
+  {% endfor %}
+</div>
+
+<style>
+.custom-variant-selector{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr)); /* deux colonnes permanentes */
+  gap:12px;
+  margin-top:20px;
+}
+  .hidden-radio {
+  display: none;
+}
+
+
+/* chaque carte occupe exactement sa colonne */
+.custom-variant-selector__block{
+  width:100%;                 /* ← la grille gère la largeur */
+  box-sizing:border-box;
+  border:2px solid #ccc;
+  border-radius:10px;
+  padding:10px;
+  text-align:center;
+  position:relative;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+.variant-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* aligne le contenu vers le bas */
+  height: 150px; /* fixe une même hauteur pour toutes les cartes */
+}
+
+.variant-card img.img-small {
+  height: 50px;
+  object-fit: contain;
+  align-self: center;
+}
+
+.variant-card img.img-large {
+  height: 70px;
+  object-fit: contain;
+  align-self: center;
+}
+
+.custom-variant-selector__block.selected{
+  border-color:#000;
+  background:#f6f6f6;
+}
+
+/*  décorations inchangées  */
+.variant-badge {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1A1A1A;
+  color: white;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+  white-space: nowrap;       /* empêche le retour à la ligne */
+  overflow: hidden;          /* masque le débordement */
+  text-overflow: ellipsis;   /* ajoute "..." si trop long */
+  max-width: 90%;            /* limite la largeur */
+  z-index: 2;
+}
+  .variant-price {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 14px;
+}
+
+.current-price {
+  font-weight: bold;
+  color: #000;
+}
+
+
+.variant-indicator{
+  width:10px;height:10px;border-radius:50%;
+  border:2px solid #000;position:absolute;top:10px;right:10px;
+}
+.custom-variant-selector__block.selected .variant-indicator{background:#000}
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const selectorBlocks = document.querySelectorAll(".custom-variant-selector__block");
+    const hiddenInput = document.querySelector('form[action^="/cart/add"] input[name="id"]');
+
+    selectorBlocks.forEach(block => {
+      block.addEventListener("click", function () {
+        selectorBlocks.forEach(b => b.classList.remove("selected"));
+        this.classList.add("selected");
+
+        const variantId = this.getAttribute("data-variant-id");
+        const radio = this.querySelector("input[type='radio']");
+        if (radio) radio.checked = true;
+        if (hiddenInput) hiddenInput.value = variantId;
+      });
+    });
+  });
+</script>
