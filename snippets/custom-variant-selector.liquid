@@ -141,104 +141,54 @@
               || document.querySelector(".custom-variant-selector");
     if (!root) return;
 
-    // Le formulaire produit de CETTE section
+    // Formulaire produit (section courante)
     const form =
       document.getElementById("product-form-{{ section.id }}") ||
       root.closest("section")?.querySelector('form[action*="/cart/add"]');
     if (!form) return;
 
-    // Les champs que le thème lit pour connaître la variante
+    // Champs utilisés par le thème
     const variantSelect = form.querySelector('select[name="id"]');
     const variantInput  = form.querySelector('input[name="id"]');
+    const qtyInput      = form.querySelector('input[name="quantity"]');
 
-    // État courant de la variante choisie via tes cartes
+    // Boutons
+    const addBtn = form.querySelector('button[name="add"], button[type="submit"]:not(.shopify-payment-button__button)');
+    const buyNowBtn = form.querySelector('.shopify-payment-button__button, .shopify-payment-button__button--unbranded');
+
     let selectedVariantId =
       (variantSelect && variantSelect.value) ||
       (variantInput && variantInput.value) ||
       "{{ product.selected_or_first_available_variant.id }}";
 
-    function setVariant(variantId, cardEl) {
-  selectedVariantId = String(variantId);
-
-  // --- 1) Synchroniser les options natives (radios / selects "options[ ]")
-  const optionRadios = Array.from(form.querySelectorAll('input[type="radio"][name^="options["]'));
-  const optionSelects = Array.from(form.querySelectorAll('select[name^="options["]'));
-  if (cardEl && (optionRadios.length || optionSelects.length)) {
-    const desired = [cardEl.dataset.o1, cardEl.dataset.o2, cardEl.dataset.o3].filter(Boolean);
-
-    // Groupes de radios par name (dans l'ordre options[1], options[2], ...)
-    if (optionRadios.length) {
-      const groups = {};
-      optionRadios.forEach(r => (groups[r.name] ||= []).push(r));
-      Object.values(groups).forEach((inputs, idx) => {
-        const want = desired[idx];
-        if (!want) return;
-        const target = inputs.find(i => i.value === want && !i.disabled);
-        if (target && !target.checked) {
-          target.click(); // déclenche les handlers du thème
-        }
-      });
-    }
-
-    // Selects d'options
-    if (optionSelects.length) {
-      optionSelects.forEach((sel, idx) => {
-        const want = desired[idx];
-        if (!want) return;
-        if (sel.value !== want) {
-          sel.value = want;
-          sel.dispatchEvent(new Event('change', { bubbles: true }));
-          sel.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-      });
-    }
-  }
-
-  // --- 2) Mettre à jour le champ name="id" (select ou input)
-  if (variantSelect) {
-    if (String(variantSelect.value) !== selectedVariantId) {
-      variantSelect.value = selectedVariantId;
-      variantSelect.dispatchEvent(new Event('change', { bubbles: true }));
-      variantSelect.dispatchEvent(new Event('input',  { bubbles: true }));
-    }
-  } else if (variantInput) {
-    variantInput.value = selectedVariantId;
-    form.dispatchEvent(new Event('change', { bubbles: true }));
-    form.dispatchEvent(new Event('input',  { bubbles: true }));
-  } else {
-    // Fallback : créer un input hidden si rien n'existe
-    const hidden = document.createElement('input');
-    hidden.type  = 'hidden';
-    hidden.name  = 'id';
-    hidden.value = selectedVariantId;
-    form.appendChild(hidden);
-  }
-
-  // Certains thèmes lisent un dataset
-  form.dataset.selectedVariantId = selectedVariantId;
-
-  // --- 3) UI locale (bordure/état sélectionné)
-  const all = root.querySelectorAll('.custom-variant-selector__block');
-  all.forEach(c => c.classList.toggle('selected', c.getAttribute('data-variant-id') === selectedVariantId));
-}
-
-
-    // Clic sur une carte -> sélectionne la variante
+    // --- Sélection par cartes
     const blocks = root.querySelectorAll(".custom-variant-selector__block");
     blocks.forEach((block) => {
-  block.addEventListener("click", function () {
-    const variantId = this.getAttribute("data-variant-id");
-    if (!variantId) return;
+      block.addEventListener("click", function () {
+        const variantId = this.getAttribute("data-variant-id");
+        if (!variantId) return;
 
-    const radio = this.querySelector('input[type="radio"]');
-    if (radio) radio.checked = true;
+        // UI locale
+        blocks.forEach((b) => b.classList.remove("selected"));
+        this.classList.add("selected");
+        const radio = this.querySelector('input[type="radio"]');
+        if (radio) radio.checked = true;
 
-    setVariant(variantId, this); // ← on passe la carte pour synchroniser les options
-  });
-});
+        // Sync champ id natif si présent
+        selectedVariantId = String(variantId);
+        if (variantSelect && String(variantSelect.value) !== selectedVariantId) {
+          variantSelect.value = selectedVariantId;
+          variantSelect.dispatchEvent(new Event("change", { bubbles: true }));
+          variantSelect.dispatchEvent(new Event("input",  { bubbles: true }));
+        } else if (!variantSelect && variantInput) {
+          variantInput.value = selectedVariantId;
+          form.dispatchEvent(new Event("change", { bubbles: true }));
+          form.dispatchEvent(new Event("input",  { bubbles: true }));
+        }
+      });
+    });
 
-
-    // Init UI locale en fonction de l’état natif
+    // Init visuel
     (function initUI(){
       const initialCard = root.querySelector('[data-variant-id="'+ String(selectedVariantId) +'"]');
       if (initialCard) {
@@ -249,22 +199,50 @@
       }
     })();
 
-    // ⚠️ Garde la bonne variante AU MOMENT DU SUBMIT (ATC & Acheter maintenant)
-    form.addEventListener("submit", function (e) {
-      // (1) Réécrit la valeur avant que le thème ne lise le champ
-      if (variantSelect) {
-        variantSelect.value = selectedVariantId;
-        variantSelect.dispatchEvent(new Event("change", { bubbles: true }));
-        variantSelect.dispatchEvent(new Event("input",  { bubbles: true }));
-      } else if (variantInput) {
-        variantInput.value = selectedVariantId;
-        // sur certains thèmes, seule la valeur suffit pour /cart/add
-      }
+    // --- Fallback robuste : forcer /cart/add.js pour le bouton "Ajouter au panier"
+    if (addBtn) {
+      addBtn.addEventListener('click', function(e){
+        // Si le thème gère déjà en AJAX et respecte name="id", laissez faire
+        // Sinon, on force ici un add.js
+        e.preventDefault();
+        const vid =
+          (variantSelect && variantSelect.value) ||
+          (variantInput && variantInput.value) ||
+          selectedVariantId;
 
-      // (2) Petites sécurités supplémentaires
-      form.dataset.selectedVariantId = selectedVariantId;
-      const addBtn = form.querySelector('[type="submit"]');
-      if (addBtn && addBtn.disabled) addBtn.disabled = false;
-    }, true); // useCapture = true pour passer AVANT les handlers du thème
+        if (!vid) { console.warn('[cvs] Aucun variantId sélectionné'); return; }
+
+        const quantity = Number(qtyInput?.value || 1);
+
+        addBtn.disabled = true;
+        addBtn.setAttribute('aria-busy', 'true');
+
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ id: String(vid), quantity: quantity })
+        })
+        .then(r => r.json())
+        .then(data => {
+          // Tente d’ouvrir / rafraîchir le mini-panier si le thème expose un trigger
+          document.dispatchEvent(new CustomEvent('cart:refresh', { detail: data }));
+          const drawerToggle = document.querySelector('[data-cart-drawer-toggle], [data-open-cart], .header__icon--cart');
+          if (drawerToggle) drawerToggle.click();
+          // À défaut, redirige vers le panier (sûr)
+          // window.location.href = '/cart';
+        })
+        .catch(err => {
+          console.error('[cvs] add.js error', err);
+          // Fallback ultime : soumettre le form natif
+          form.submit();
+        })
+        .finally(() => {
+          addBtn.disabled = false;
+          addBtn.removeAttribute('aria-busy');
+        });
+      }, { capture: true });
+    }
+
+    // "Acheter maintenant" reste géré par Shopify Payments → on ne bloque pas buyNowBtn
   });
 </script>
