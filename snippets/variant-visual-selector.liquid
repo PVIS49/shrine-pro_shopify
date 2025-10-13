@@ -3,7 +3,8 @@
   <fieldset class="pvv-grid" role="radiogroup" aria-label="Variantes">
     {%- assign current = product.selected_or_first_available_variant -%}
     {%- for v in product.variants -%}
-      <label class="pvv-card" data-vid="{{ v.id }}" aria-pressed="{{ v.id == current.id }}">
+      <label class="pvv-card" data-vid="{{ v.id }}" aria-pressed="{% if v.id == current.id %}true{% else %}false{% endif %}">
+
         <input class="pvv-radio" type="radio" name="pvv-{{ block.id }}" value="{{ v.id }}"
                {% if v.id == current.id %}checked{% endif %}
                {% unless v.available %}disabled{% endunless %}>
