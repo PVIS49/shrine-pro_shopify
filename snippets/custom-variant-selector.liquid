@@ -181,17 +181,19 @@
     // Clic sur une carte -> sélectionne la variante
     const blocks = root.querySelectorAll(".custom-variant-selector__block");
     blocks.forEach((block) => {
-  block.addEventListener("click", function () {
-    const variantId = this.getAttribute("data-variant-id");
-    if (!variantId) return;
+      block.addEventListener("click", function () {
+        const variantId = this.getAttribute("data-variant-id");
+        if (!variantId) return;
 
-    const radio = this.querySelector('input[type="radio"]');
-    if (radio) radio.checked = true;
+        blocks.forEach((b) => b.classList.remove("selected"));
+        this.classList.add("selected");
 
-    setVariant(variantId, this); // ← on passe la carte pour synchroniser les options
-  });
-});
+        const radio = this.querySelector('input[type="radio"]');
+        if (radio) radio.checked = true;
 
+        setVariant(variantId);
+      });
+    });
 
     // Init UI locale en fonction de l’état natif
     (function initUI(){
