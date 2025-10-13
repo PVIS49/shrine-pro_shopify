@@ -178,11 +178,19 @@
             "question": "Parfum Vaillant tient-il toute la journée ?",
             "answer": "<p>Le parfum Vaillant est conçu pour durer. Sa concentration en eau de parfum, avec au moins 15 % d’essence pure, garantit une tenue longue durée, du matin jusqu’au soir.</p>"
           }
+        },
+        "text_GCAcfp": {
+          "type": "text",
+          "settings": {
+            "question": "Est-ce que Vaillant aide vraiment à séduire ?",
+            "answer": "<p>Oui, c’est précisément sa promesse. Chaque note a été pensée pour provoquer une réaction, créer de l’attirance et laisser une impression marquante. Ceux qui l’essayent en voient vite les effets.</p>"
+          }
         }
       },
       "block_order": [
         "text_Ttww39",
-        "text_bDU8aE"
+        "text_bDU8aE",
+        "text_GCAcfp"
       ],
       "name": "Faq",
       "settings": {
