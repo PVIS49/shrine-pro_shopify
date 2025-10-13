@@ -681,6 +681,12 @@
                 sizing_chart_html: sizing_chart_html,
                 has_filtering: has_filtering
               %}
+              {%- when 'variant_visual_selector' -%}
+  {% if block.settings.title != blank %}
+    <h3 class="product-block-title">{{ block.settings.title }}</h3>
+  {% endif %}
+  {% render 'variant-visual-selector', product: product, section: section, block: block %}
+
             {%- when 'buy_buttons' -%}
               {%- render 'buy-buttons', block: block, product: product, product_form_id: product_form_id, section_id: section.id, show_pickup_availability: true, main_product: true -%}
             {%- when 'reviews' -%}
