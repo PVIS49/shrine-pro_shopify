@@ -593,6 +593,7 @@
         "row_iHGnDR",
         "row_zzXddd"
       ],
+      "disabled": true,
       "name": "Comparison table",
       "settings": {
         "display_id": false,
