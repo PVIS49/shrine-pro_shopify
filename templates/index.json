@@ -228,7 +228,7 @@
           "settings": {
             "title": "ÉVEILLEZ VOTRE INSTINCT",
             "title_highlight_color": "#6D388B",
-            "heading_size": "h1"
+            "heading_size": "h2"
           }
         },
         "text_9Ne7Ta": {
@@ -260,7 +260,7 @@
         "transparent_container_color": "white",
         "mobile_content_alignment": "center",
         "stack_images_on_mobile": true,
-        "show_text_below": true
+        "show_text_below": false
       }
     },
     "press_BVn679": {
