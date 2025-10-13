@@ -26,9 +26,9 @@
             "heading_prefix": "UN REGARD, UN SOURIRE EN COIN, UN COMPLIMENT INATTENDU…",
             "heading": "",
             "title_highlight_color": "#6D388B",
-            "heading_size": "h1",
+            "heading_size": "h2",
             "heading_suffix": "",
-            "heading_prefix_size": "h4",
+            "heading_prefix_size": "h5",
             "text": "",
             "button_label_1": "avec Parfum Vaillant",
             "button_link_1": "shopify://products/parfum-vaillant",
@@ -61,7 +61,7 @@
         "visibility": "always-display",
         "min_desktop_height_type": "pixels",
         "desktop_pixels_height": 600,
-        "min_mobile_height_type": "pixels",
+        "min_mobile_height_type": "autofit",
         "mobile_pixels_height": 400,
         "transparent_header": false,
         "transparent_header_text_color": "text",
@@ -77,61 +77,6 @@
         "dots_color_scheme": "background-1",
         "padding_top": 50,
         "padding_bottom": 50
-      }
-    },
-    "image_banner_JhPHN8": {
-      "type": "image-banner",
-      "blocks": {
-        "heading_qhxiMG": {
-          "type": "heading",
-          "settings": {
-            "title": "",
-            "title_highlight_color": "#6d388b",
-            "heading_size": "h2"
-          }
-        },
-        "text_xx88qp": {
-          "type": "text",
-          "settings": {
-            "text": "UN REGARD, UN SOURIRE EN COIN, UN COMPLIMENT INATTENDU…",
-            "text_style": "body"
-          }
-        },
-        "buttons_7XgAqw": {
-          "type": "buttons",
-          "settings": {
-            "button_label_1": "avec Parfum Vaillant",
-            "button_link_1": "shopify://products/parfum-vaillant",
-            "button_style_secondary_1": false,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
-          }
-        }
-      },
-      "block_order": [
-        "heading_qhxiMG",
-        "text_xx88qp",
-        "buttons_7XgAqw"
-      ],
-      "name": "t:sections.image-banner.presets.name",
-      "settings": {
-        "display_id": false,
-        "visibility": "always-display",
-        "image": "shopify://shop_images/Banniere_femme_qui_se_mord_les_levres_1.webp",
-        "image_1_visibility": "always-display",
-        "image_2_visibility": "always-display",
-        "image_overlay_opacity": 30,
-        "image_height": "adapt",
-        "url": "",
-        "desktop_content_position": "middle-center",
-        "show_text_box": false,
-        "desktop_content_alignment": "center",
-        "color_scheme": "background-1",
-        "transparent_container_color": "white",
-        "mobile_content_alignment": "center",
-        "stack_images_on_mobile": false,
-        "show_text_below": false
       }
     },
     "image_with_text_ewhUGq": {
@@ -728,7 +673,6 @@
   },
   "order": [
     "slideshow_hero_HqxUwU",
-    "image_banner_JhPHN8",
     "image_with_text_ewhUGq",
     "image_banner_nYgATc",
     "slideshow_hero_CLbwTd",
