@@ -375,7 +375,7 @@
             "settings": {
               "display_total_savings": true,
               "savings_left_text": "<strong>Économies</strong>",
-              "savings_right_text": "<strong>-[savings]</strong>",
+              "savings_right_text": "<strong>-€50</strong>",
               "savings_alignment": "spaced",
               "savings_text_color": "accent-1",
               "savings_text_size": 16,
