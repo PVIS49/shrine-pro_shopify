@@ -137,40 +137,144 @@
   top: -10px;                 /* remonte la pastille */
   transform: translateX(-50%);/* garde le centrage horizontal */
 }
-#cvs-{{ section.id }}-{{ block.id }} .custom-variant-selector__block{
-  padding: 8px;          /* était 10px */
-  border-radius: 8px;    /* était 10px */
-}
 
-#cvs-{{ section.id }}-{{ block.id }} .variant-card{
-  height: 120px;         /* était 150px */
-}
+</style>
 
-#cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-small{
-  height: 40px;          /* était 50px */
-}
+<script>
+(() => {
+  document.addEventListener('DOMContentLoaded', () => {
+    const root = document.getElementById("cvs-{{ section.id }}-{{ block.id }}") 
+              || document.querySelector(".custom-variant-selector");
+    if (!root) return;
 
-#cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-large{
-  height: 56px;          /* était 70px */
-}
+    // ⬇️ FORÇAGE: mets ICI les IDs de sections à rafraîchir (ton drawer + le header)
+    const FORCE_SECTION_IDS = ['cart-drawer','header'];
 
-#cvs-{{ section.id }}-{{ block.id }} .variant-label{
-  font-size: 14px;       /* ajuste si besoin */
-}
+    const VARIANTS  = {{ product.variants | json }};
+    const OPTS_CNT  = {{ product.options | size }};
+    const sectionId = "{{ section.id }}";
 
-#cvs-{{ section.id }}-{{ block.id }} .variant-price{
-  font-size: 12px;       /* était 14px */
-  gap: 4px;              /* était 6px */
-}
+    // Boutons / Form de la section produit
+    const stickyBtn   = document.getElementById(`SectionAtcBtn-${sectionId}`); // sticky ATC (type="button")
+    const productForm = document.getElementById(`product-form-${sectionId}`);  // form principal si présent
+    const qtyInput    = document.getElementById(`Quantity-${sectionId}`) || (productForm ? productForm.querySelector('input[name="quantity"]') : null);
 
-#cvs-{{ section.id }}-{{ block.id }} .old-price{ font-size: 12px; }
+    const cards = Array.from(root.querySelectorAll('.custom-variant-selector__block'));
+    if (!cards.length) return;
 
-/* pastille & indicateur un poil plus petits */
-#cvs-{{ section.id }}-{{ block.id }} .variant-badge{
-  font-size: 11px;
-  padding: 3px 8px;
-}
+    // Helpers variantes
+    const byId = id => VARIANTS.find(v => String(v.id) === String(id));
+    const byOpts = (o1,o2,o3) => VARIANTS.find(v => { const o=v.options; return (o[0]==o1) && (OPTS_CNT<2||o[1]==o2) && (OPTS_CNT<3||o[2]==o3); });
+    const selCard = () => root.querySelector('.custom-variant-selector__block.selected') || cards[0] || null;
+    const selVariant = () => { const c=selCard(); return c ? (byOpts(c.dataset.o1,c.dataset.o2,c.dataset.o3) || (c.dataset.variantId?byId(c.dataset.variantId):null)) : null; };
+    const getQty = () => { const n = qtyInput ? parseInt(qtyInput.value,10) : 1; return (isNaN(n)||n<=0) ? 1 : n; };
 
-#cvs-{{ section.id }}-{{ block.id }} .variant-indicator{
-  width: 9px; height: 9px;
-  top: 8px; right: 8px;
+    function ensureFormHasVariant(variantId){
+      if (!productForm) return;
+      const sel = productForm.querySelector('select[name="id"]');
+      if (sel){ if (String(sel.value)!==String(variantId)){ sel.value=String(variantId); sel.dispatchEvent(new Event('change',{bubbles:true})); } return; }
+      let hid = productForm.querySelector('input[name="id"]');
+      if (!hid){ hid = document.createElement('input'); hid.type='hidden'; hid.name='id'; productForm.appendChild(hid); }
+      if (String(hid.value)!==String(variantId)){ hid.value=String(variantId); productForm.dispatchEvent(new Event('change',{bubbles:true})); }
+    }
+
+    // Sélection visuelle des cartes + sync form
+    cards.forEach(card=>{
+      card.addEventListener('click', () => {
+        cards.forEach(b=>b.classList.remove('selected'));
+        card.classList.add('selected');
+        const r=card.querySelector('input[type="radio"]'); if (r) r.checked=true;
+        const v = selVariant(); if (v) ensureFormHasVariant(v.id);
+      });
+    });
+    // Init
+    (function(){
+      let currentId = null;
+      const idField = productForm && (productForm.querySelector('select[name="id"], input[name="id"]'));
+      if (idField) currentId = idField.value;
+      if (!currentId) currentId = "{{ product.selected_or_first_available_variant.id }}";
+      const initial = cards.find(b => String(b.dataset.variantId)===String(currentId)) || cards[0];
+      if (initial){ cards.forEach(b=>b.classList.remove('selected')); initial.classList.add('selected'); const r=initial.querySelector('input[type="radio"]'); if (r) r.checked=true; const v=selVariant(); if (v) ensureFormHasVariant(v.id); }
+    })();
+
+    // --- Rafraîchissement des SECTIONS (IDs forcés) ---
+    const sectionsParam = encodeURIComponent(FORCE_SECTION_IDS.join(','));
+    const sectionsUrl   = encodeURIComponent(window.location.pathname);
+
+    function replaceSections(map){
+      if (!map) return false;
+      let ok=false;
+      FORCE_SECTION_IDS.forEach(id=>{
+        const html = map[id]; if (!html) return;
+        const tmp = document.createElement('div'); tmp.innerHTML = html.trim();
+        // cherche le noeud racine portant data-section-id=id, sinon remplace le premier enfant
+        const repl = tmp.querySelector(`[data-section-id="${id}"]`) || tmp.firstElementChild;
+        const current = document.querySelector(`[data-section-id="${id}"]`);
+        if (repl && current){ current.replaceWith(repl); ok=true; }
+      });
+      return ok;
+    }
+
+    function openDrawer(){
+      const drawer = document.querySelector('cart-drawer, #CartDrawer');
+      if (drawer && typeof drawer.open === 'function'){ try{ drawer.open(); }catch(e){} }
+      document.dispatchEvent(new CustomEvent('cart:open',{detail:{source:'cvs'}}));
+      document.body.classList.add('cart-open','drawer--cart-open');
+      const opener = document.querySelector('[data-cart-drawer-open], [data-action="open-cart"], .js-openCartDrawer, .header__icon--cart, .cart-toggle, .open-cart, #CartDrawer-Open');
+      if (opener) opener.click();
+    }
+
+    async function addToCartAjax(variantId, qty){
+      const fd = new FormData(); fd.set('id', variantId); fd.set('quantity', qty);
+      const res = await fetch(`/cart/add.js?sections=${sectionsParam}&sections_url=${sectionsUrl}`, { method:'POST', body:fd, headers:{'Accept':'application/json'} });
+      if (!res.ok) throw new Error('add.js failed');
+      const json = await res.json();
+      const map  = json.sections || json;
+      // remplace nos sections forçées
+      replaceSections(map);
+      // signaux + ouverture
+      document.dispatchEvent(new CustomEvent('cart:refresh',{detail:{source:'cvs'}}));
+      document.dispatchEvent(new CustomEvent('cart:updated',{detail:{source:'cvs'}}));
+      document.dispatchEvent(new CustomEvent('product:added',{detail:{source:'cvs', id:variantId, qty}}));
+      openDrawer();
+    }
+
+    function setBusy(btn, on){
+      if (!btn) return;
+      btn.classList.toggle('is-loading', !!on);
+      btn.disabled = !!on;
+      btn.setAttribute('aria-disabled', String(!!on));
+    }
+
+    // Sticky ATC (type="button")
+    if (stickyBtn){
+      let busy=false;
+      stickyBtn.addEventListener('click', async (e)=>{
+        e.preventDefault();
+        if (busy) return;
+        const v = selVariant(); if (!v || !v.available) return;
+        ensureFormHasVariant(v.id);
+        busy=true; setBusy(stickyBtn, true);
+        try{ await addToCartAjax(v.id, getQty()); } catch(e){ console.warn(e); }
+        finally{ setBusy(stickyBtn, false); busy=false; }
+      });
+    }
+
+    // Form principal (si existant)
+    if (productForm){
+      productForm.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        const submit = productForm.querySelector('button[name="add"], button[type="submit"]:not(.shopify-payment-button__button)');
+        const v = selVariant(); if (!v || !v.available) return;
+        ensureFormHasVariant(v.id);
+        setBusy(submit, true);
+        try{ await addToCartAjax(v.id, getQty()); } catch(e){ console.warn(e); }
+        finally{ setBusy(submit, false); }
+      }, true);
+    }
+
+    // Style léger
+    const s=document.createElement('style'); s.textContent=`.is-loading{opacity:.7;pointer-events:none;position:relative;}`; document.head.appendChild(s);
+  });
+})();
+</script>
