@@ -34,6 +34,33 @@
             "custom_liquid": "<div class=\"product-info__liquid\" bis_skin_checked=\"1\">\n            <div style=\"display: flex; align-items: center; font-family: 'DIN Next', Arial, sans-serif; font-size: 13px;\" bis_skin_checked=\"1\">\n  <img src=\"https://cdn.shopify.com/s/files/1/0908/5278/6562/files/etoiles_trustpilot.webp?v=1747998238\" alt=\"Trustpilot Stars\" style=\"width: 100px; height: auto; margin-right: 10px;\">\n  <span style=\"color: #1a1a1a; font-weight: bold;\">\n    + de 3 000 <span style=\"font-weight: normal;\"> séducteurs satisfaits !</span>\n  </span>\n</div>\n          </div>"
           }
         },
+        "icon_with_text_iKXzM8": {
+          "type": "icon_with_text",
+          "settings": {
+            "layout": "horizontal",
+            "icon_color": "accent-1",
+            "desktop_icon_size": 32,
+            "desktop_spacing": 8,
+            "desktop_text_size": 14,
+            "mobile_icon_size": 32,
+            "mobile_spacing": 8,
+            "mobile_text_size": 12,
+            "icon_1": "favorite",
+            "icon_1_fill": false,
+            "image_1": "shopify://shop_images/Provoque_le_desir.png",
+            "heading_1": "Provoque le désir",
+            "icon_2": "undo",
+            "icon_2_fill": false,
+            "image_2": "shopify://shop_images/Diamant.png",
+            "heading_2": "Notes d'exception",
+            "icon_3": "local_shipping",
+            "icon_3_fill": false,
+            "image_3": "shopify://shop_images/France_1_c38a55a1-a8df-4a49-9480-11037450088c.png",
+            "heading_3": "Fabriqué en France",
+            "margin_top": 24,
+            "margin_bottom": 24
+          }
+        },
         "a6eb81db-40e4-43e0-972f-32db010a4a56": {
           "type": "rating_stars",
           "disabled": true,
@@ -347,6 +374,7 @@
         "title",
         "custom_liquid_VzJmFG",
         "custom_liquid_BEpXah",
+        "icon_with_text_iKXzM8",
         "a6eb81db-40e4-43e0-972f-32db010a4a56",
         "price",
         "5fcc0428-e768-4cb7-bea3-eb0274198dd1",
