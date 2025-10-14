@@ -166,41 +166,40 @@
 
 
 
-/* + petit cran de taille (≈ 112–114px) */
+
+/* +1 cran de hauteur */
 #cvs-{{ section.id }}-{{ block.id }} .variant-card{
-  height: 114px;            /* +4 vs 110 */
+  height: 118px;   /* était 114px */
   padding-top: 12px;
 }
-
 #cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-small{
-  height: 39px;             /* +1 vs 38 */
+  height: 40px;    /* était 39px */
 }
 #cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-large{
-  height: 53px;             /* +1 vs 52 */
+  height: 54px;    /* était 53px */
 }
 
+/* textes: micro-bump pour garder l’équilibre visuel */
 #cvs-{{ section.id }}-{{ block.id }} .variant-label{
-  font-size: 14.5px;        /* +0.5 pour la lisibilité */
+  font-size: 15px;    /* était 14.5px */
 }
 #cvs-{{ section.id }}-{{ block.id }} .variant-price,
 #cvs-{{ section.id }}-{{ block.id }} .old-price{
-  font-size: 13px;          /* +0.5 */
+  font-size: 13px;    /* ok de rester à 13px, sinon 13.25 si tu veux */
 }
 
-#cvs-{{ section.id }}-{{ block.id }} .custom-variant-selector__block{
-  padding: 8px;             /* +1px d’air */
-}
-
+/* optionnel: un soupçon plus d’air entre les cartes */
 #cvs-{{ section.id }}-{{ block.id }}.custom-variant-selector{
-  gap: 11px;                /* léger écart pour respirer */
+  gap: 12px;
 }
 
-/* Mobile : petit bump coordonné */
+/* mobile coordonné */
 @media (max-width: 749px){
-  #cvs-{{ section.id }}-{{ block.id }} .variant-card{ height: 108px; }
-  #cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-small{ height: 37px; }
-  #cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-large{ height: 49px; }
+  #cvs-{{ section.id }}-{{ block.id }} .variant-card{ height: 112px; }
+  #cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-small{ height: 38px; }
+  #cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-large{ height: 51px; }
 }
+
 
 
 
