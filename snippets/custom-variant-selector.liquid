@@ -210,6 +210,34 @@
 #cvs-{{ section.id }}-{{ block.id }} .variant-badge{
   /* rien à changer ici, elle reste indépendante du padding de .variant-card */
 }
+/* 1) Même hauteur d’image pour toutes les cartes */
+#cvs-{{ section.id }}-{{ block.id }} .variant-card img,
+#cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-small,
+#cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-large{
+  height: 56px;        /* choisis 50–60px selon ton goût */
+  object-fit: contain;
+}
+
+/* 2) Aligner image + textes en bas de chaque carte (même baseline) */
+#cvs-{{ section.id }}-{{ block.id }} .variant-card{
+  height: 120px;       /* ta hauteur de carte actuelle */
+  padding-top: 16px;   /* garde un peu d’air pour ne pas toucher le badge */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;  /* <- tout en bas, dans toutes les cartes */
+}
+
+/* 3) Espacements compacts et constants */
+#cvs-{{ section.id }}-{{ block.id }} .variant-label{
+  margin-top: 6px;
+  margin-bottom: 2px;
+  line-height: 1.2;
+}
+#cvs-{{ section.id }}-{{ block.id }} .variant-price{
+  margin-top: 2px;
+  gap: 4px;
+  line-height: 1;      /* évite des variations verticales */
+}
 
 </style>
 
