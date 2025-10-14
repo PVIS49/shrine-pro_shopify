@@ -166,45 +166,50 @@
 
 
 
-/* ↓ Version plus basse (≈ 96–100px de haut) */
+/* Version légèrement PLUS grande (≈ 108–112px) */
 #cvs-{{ section.id }}-{{ block.id }} .custom-variant-selector__block{
-  padding: 6px;                 /* moins d’air dans la carte */
+  padding: 7px;                 /* un poil plus d'air que 6px */
 }
 
 #cvs-{{ section.id }}-{{ block.id }} .variant-card{
-  height: 115px;                 /* ↓ était 120/150 → ajuste 94–104 si besoin */
-  padding-top: 12px;            /* garde le “décalage” vers le bas que tu aimes */
-  justify-content: flex-end;    /* ne pas toucher : aligne vers le bas */
+  height: 110px;                /* ↑ était ~98px */
+  padding-top: 12px;            /* conserve le décalage vers le bas */
+  justify-content: flex-end;
 }
 
-/* images compactes et cohérentes */
+/* images un cran au-dessus */
 #cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-small{
-  height: 34px;                 /* ↓ était 40/50 */
+  height: 38px;                 /* ↑ était 34px */
 }
 #cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-large{
-  height: 46px;                 /* ↓ était 56/70 */
+  height: 52px;                 /* ↑ était 46px */
 }
 
-/* textes un poil plus denses */
+/* textes un peu plus lisibles */
 #cvs-{{ section.id }}-{{ block.id }} .variant-label{
-  font-size: 13px;
-  margin: 3px 0 0;
-  line-height: 1.2;
+  font-size: 14px;              /* ↑ était 13px */
+  margin: 4px 0 0;
+  line-height: 1.22;
 }
 #cvs-{{ section.id }}-{{ block.id }} .variant-price{
-  font-size: 11.5px;
+  font-size: 12.5px;            /* ↑ était 11.5px */
   margin-top: 2px;
-  gap: 4px;
+  gap: 5px;
 }
-#cvs-{{ section.id }}-{{ block.id }} .old-price{ font-size: 11.5px; }
+#cvs-{{ section.id }}-{{ block.id }} .old-price{ font-size: 12.5px; }
 
-/* l’étiquette ne bouge pas (tu peux garder ton top:-10px existant) */
-/* #cvs-{{ section.id }}-{{ block.id }} .variant-badge{ top:-10px; } */
-
-/* Optionnel : un peu plus serré entre les cartes */
+/* grille un peu plus aérée que la version compacte */
 #cvs-{{ section.id }}-{{ block.id }}.custom-variant-selector{
-  gap: 8px;                     /* ↓ si tu veux resserrer la grille */
+  gap: 10px;                    /* entre 8 et 12 selon ton goût */
 }
+
+/* (optionnel) mobile un chouïa plus bas pour gagner de la place */
+@media (max-width: 749px){
+  #cvs-{{ section.id }}-{{ block.id }} .variant-card{ height: 104px; }
+  #cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-small{ height: 36px; }
+  #cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-large{ height: 48px; }
+}
+
 
 
 
