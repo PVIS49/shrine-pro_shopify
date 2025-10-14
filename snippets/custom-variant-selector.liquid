@@ -137,6 +137,30 @@
   top: -10px;                 /* remonte la pastille */
   transform: translateX(-50%);/* garde le centrage horizontal */
 }
+/* 1) Descendre tout le contenu, sans bouger la pastille */
+#cvs-{{ section.id }}-{{ block.id }} .variant-card{
+  padding-top: 14px;        /* ↑ augmente pour descendre davantage (ex: 18px) */
+  justify-content: flex-end;/* on garde l’ancrage en bas */
+}
+
+/* (optionnel) si tu veux descendre encore l’image visuellement */
+#cvs-{{ section.id }}-{{ block.id }} .variant-card img{
+  margin-top: auto;         /* pousse l’image vers le bas dans la colonne */
+}
+
+/* 2) Resserre l’espace texte (nom ↔ prix) */
+#cvs-{{ section.id }}-{{ block.id }} .variant-label{
+  margin: 4px 0 0;          /* p a une marge par défaut — on la réduit */
+  line-height: 1.2;         /* texte plus compact */
+}
+
+#cvs-{{ section.id }}-{{ block.id }} .variant-price{
+  margin-top: 2px;          /* était 4px : on réduit l’écart nom/prix */
+  gap: 4px;                 /* resserre l’écart entre ancien prix et prix actuel */
+}
+
+/* La pastille reste en place (inutile de toucher si tu as déjà top:-10px) */
+/* #cvs-... .variant-badge{ top:-10px; } */
 
 </style>
 
