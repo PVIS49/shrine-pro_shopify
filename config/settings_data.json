@@ -415,7 +415,7 @@
         ],
         "settings": {
           "test_mode": false,
-          "heading_text": "Panier",
+          "heading_text": "Votre panier",
           "heading_alignment": "center",
           "desktop_width": "normal",
           "mobile_width": "full",
