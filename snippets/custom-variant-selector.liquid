@@ -137,7 +137,6 @@
   top: -10px;                 /* remonte la pastille */
   transform: translateX(-50%);/* garde le centrage horizontal */
 }
-/* Réduction globale ~20% des cartes variantes (override simple) */
 #cvs-{{ section.id }}-{{ block.id }} .custom-variant-selector__block{
   padding: 8px;          /* était 10px */
   border-radius: 8px;    /* était 10px */
@@ -175,66 +174,3 @@
 #cvs-{{ section.id }}-{{ block.id }} .variant-indicator{
   width: 9px; height: 9px;
   top: 8px; right: 8px;
-}
-
-/* (optionnel) encore un cran de réduction en mobile */
-@media (max-width: 749px){
-  #cvs-{{ section.id }}-{{ block.id }} .variant-card{ height: 110px; }
-  #cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-small{ height: 36px; }
-  #cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-large{ height: 50px; }
-}
-/* ↓↓↓ fait descendre le contenu (image + textes) sans déplacer l'étiquette */
-#cvs-{{ section.id }}-{{ block.id }} .variant-card{
-  padding-top: 16px;      /* pousse le contenu vers le bas */
-  justify-content: flex-start; /* on n’a plus besoin de “coller” en bas */
-}
-
-/* Espace plus serré entre le nom et le prix */
-#cvs-{{ section.id }}-{{ block.id }} .variant-label{
-  margin-top: 6px;        /* un petit air au-dessus du nom */
-  margin-bottom: 2px;     /* réduit l’écart avant le prix */
-  line-height: 1.2;
-}
-#cvs-{{ section.id }}-{{ block.id }} .variant-price{
-  margin-top: 2px;        /* était 4px */
-  gap: 4px;               /* était 6px */
-}
-
-/* Optionnel : un poil d’air au-dessus de l’image si besoin */
-#cvs-{{ section.id }}-{{ block.id }} .variant-card img{
-  display: block;
-  margin-top: 4px;        /* ajuste à 0/2/6 selon rendu */
-}
-
-/* L’étiquette reste en place (ne bouge pas) */
-#cvs-{{ section.id }}-{{ block.id }} .variant-badge{
-  /* rien à changer ici, elle reste indépendante du padding de .variant-card */
-}
-/* 1) Même hauteur d’image pour toutes les cartes */
-#cvs-{{ section.id }}-{{ block.id }} .variant-card img,
-#cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-small,
-#cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-large{
-  height: 56px;        /* choisis 50–60px selon ton goût */
-  object-fit: contain;
-}
-
-/* 2) Aligner image + textes en bas de chaque carte (même baseline) */
-#cvs-{{ section.id }}-{{ block.id }} .variant-card{
-  height: 120px;       /* ta hauteur de carte actuelle */
-  padding-top: 16px;   /* garde un peu d’air pour ne pas toucher le badge */
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;  /* <- tout en bas, dans toutes les cartes */
-}
-
-/* 3) Espacements compacts et constants */
-#cvs-{{ section.id }}-{{ block.id }} .variant-label{
-  margin-top: 6px;
-  margin-bottom: 2px;
-  line-height: 1.2;
-}
-#cvs-{{ section.id }}-{{ block.id }} .variant-price{
-  margin-top: 2px;
-  gap: 4px;
-  line-height: 1;      /* évite des variations verticales */
-}</style>
