@@ -238,6 +238,40 @@
   gap: 4px;
   line-height: 1;      /* évite des variations verticales */
 }
+/* Aligne parfaitement nom+prix, tout en gardant une image + petite pour 50 ml */
+#cvs-{{ section.id }}-{{ block.id }} .variant-card{
+  /* slot image fixe + lignes pour les textes */
+  display: grid;
+  grid-template-rows: 60px auto auto;   /* 60px = hauteur de zone image (ajuste si besoin) */
+  align-items: end;                      /* image collée en bas de son slot */
+  justify-items: center;                 /* centre horizontalement */
+  height: 120px;                         /* ta hauteur de carte actuelle */
+  padding-top: 16px;                     /* laisse de l’air sous le badge */
+}
+
+/* Image centrée, hauteur variable mais limitée au slot */
+#cvs-{{ section.id }}-{{ block.id }} .variant-card img{
+  max-height: 56px;   /* plafond global de l’image (100 ml) */
+  width: auto;
+  object-fit: contain;
+  align-self: end;     /* colle l’image en bas du slot */
+}
+
+/* 50 ml plus petit, 100 ml plus grand */
+#cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-small{ max-height: 40px; } /* 50 ml */
+#cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-large{ max-height: 56px; } /* 100 ml */
+
+/* Espacements compacts et constants pour garder l’alignement des baselines */
+#cvs-{{ section.id }}-{{ block.id }} .variant-label{
+  margin-top: 6px;
+  margin-bottom: 2px;
+  line-height: 1.2;
+}
+#cvs-{{ section.id }}-{{ block.id }} .variant-price{
+  margin-top: 2px;
+  gap: 4px;
+  line-height: 1;
+}
 
 </style>
 
