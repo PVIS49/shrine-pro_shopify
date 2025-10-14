@@ -272,6 +272,57 @@
   gap: 4px;
   line-height: 1;
 }
+/* Assure que les deux cartes démarrent à la même hauteur */
+#cvs-{{ section.id }}-{{ block.id }} .custom-variant-selector{
+  align-items: start; /* pas de baseline chelou */
+}
+
+/* Le bloc carte réserve un "capot" en haut pour le badge (même pour toutes) */
+#cvs-{{ section.id }}-{{ block.id }} .custom-variant-selector__block{
+  display: flex;              /* évite les effondrements de marge */
+  flex-direction: column;
+  padding-top: 28px;          /* ⬅ réserve l’espace du badge */
+  /* garde tes autres styles (border, radius, etc.) */
+}
+
+/* Le badge reste proche du haut (ne touche plus à .variant-card) */
+#cvs-{{ section.id }}-{{ block.id }} .variant-badge{
+  top: 6px;                   /* ou -6px si tu veux flottant */
+  transform: translateX(-50%);
+}
+
+/* Contenu interne: grille 3 lignes (image / nom / prix) aligné en bas */
+#cvs-{{ section.id }}-{{ block.id }} .variant-card{
+  padding-top: 0;             /* on retire le padding-top ajouté avant */
+  display: grid;
+  grid-template-rows: 60px auto auto;  /* hauteur de la "zone image" */
+  justify-items: center;
+  align-items: end;
+  height: 120px;              /* garde ta hauteur compacte */
+  flex: 1;                    /* prend toute la hauteur du bloc */
+}
+
+/* Images: 50 ml plus petite, 100 ml plus grande, tout en restant dans le slot */
+#cvs-{{ section.id }}-{{ block.id }} .variant-card img{
+  width: auto;
+  object-fit: contain;
+  align-self: end;
+  max-height: 56px;           /* plafond global (100 ml) */
+}
+#cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-small{ max-height: 40px; } /* 50 ml */
+#cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-large{ max-height: 56px; } /* 100 ml */
+
+/* Espacements textes compacts et constants */
+#cvs-{{ section.id }}-{{ block.id }} .variant-label{
+  margin-top: 6px;
+  margin-bottom: 2px;
+  line-height: 1.2;
+}
+#cvs-{{ section.id }}-{{ block.id }} .variant-price{
+  margin-top: 2px;
+  gap: 4px;
+  line-height: 1;
+}
 
 </style>
 
