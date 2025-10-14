@@ -137,6 +137,52 @@
   top: -10px;                 /* remonte la pastille */
   transform: translateX(-50%);/* garde le centrage horizontal */
 }
+/* Réduction globale ~20% des cartes variantes (override simple) */
+#cvs-{{ section.id }}-{{ block.id }} .custom-variant-selector__block{
+  padding: 8px;          /* était 10px */
+  border-radius: 8px;    /* était 10px */
+}
+
+#cvs-{{ section.id }}-{{ block.id }} .variant-card{
+  height: 120px;         /* était 150px */
+}
+
+#cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-small{
+  height: 40px;          /* était 50px */
+}
+
+#cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-large{
+  height: 56px;          /* était 70px */
+}
+
+#cvs-{{ section.id }}-{{ block.id }} .variant-label{
+  font-size: 14px;       /* ajuste si besoin */
+}
+
+#cvs-{{ section.id }}-{{ block.id }} .variant-price{
+  font-size: 12px;       /* était 14px */
+  gap: 4px;              /* était 6px */
+}
+
+#cvs-{{ section.id }}-{{ block.id }} .old-price{ font-size: 12px; }
+
+/* pastille & indicateur un poil plus petits */
+#cvs-{{ section.id }}-{{ block.id }} .variant-badge{
+  font-size: 11px;
+  padding: 3px 8px;
+}
+
+#cvs-{{ section.id }}-{{ block.id }} .variant-indicator{
+  width: 9px; height: 9px;
+  top: 8px; right: 8px;
+}
+
+/* (optionnel) encore un cran de réduction en mobile */
+@media (max-width: 749px){
+  #cvs-{{ section.id }}-{{ block.id }} .variant-card{ height: 110px; }
+  #cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-small{ height: 36px; }
+  #cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-large{ height: 50px; }
+}
 
 </style>
 
