@@ -328,12 +328,12 @@
           "097b7b4f-c0b8-4073-a06b-e6d49a5aad20": {
             "type": "cart_items",
             "settings": {
-              "image_size": "20",
+              "image_size": "25",
               "image_link": false,
               "title_size": "1.5",
               "title_link": false,
               "displayed_variants": "compact",
-              "prices_position": "right",
+              "prices_position": "left",
               "displayed_compare_prices": "product",
               "price_color": "accent-1",
               "compare_price_color": "text",
