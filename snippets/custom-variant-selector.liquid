@@ -301,5 +301,14 @@
   gap: 4px;
   line-height: 1;
 }
+/* Rendez toute la carte cliquable, et ignorez les clics sur le contenu interne */
+#cvs-{{ section.id }}-{{ block.id }} .custom-variant-selector__block{
+  display:block; position:relative; cursor:pointer;
+}
+#cvs-{{ section.id }}-{{ block.id }} .variant-card,
+#cvs-{{ section.id }}-{{ block.id }} .variant-card * ,
+#cvs-{{ section.id }}-{{ block.id }} .variant-badge{
+  pointer-events: none; /* le clic passe au <label> parent */
+}
 
 </style>
