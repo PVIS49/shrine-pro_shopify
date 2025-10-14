@@ -183,6 +183,33 @@
   #cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-small{ height: 36px; }
   #cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-large{ height: 50px; }
 }
+/* ↓↓↓ fait descendre le contenu (image + textes) sans déplacer l'étiquette */
+#cvs-{{ section.id }}-{{ block.id }} .variant-card{
+  padding-top: 16px;      /* pousse le contenu vers le bas */
+  justify-content: flex-start; /* on n’a plus besoin de “coller” en bas */
+}
+
+/* Espace plus serré entre le nom et le prix */
+#cvs-{{ section.id }}-{{ block.id }} .variant-label{
+  margin-top: 6px;        /* un petit air au-dessus du nom */
+  margin-bottom: 2px;     /* réduit l’écart avant le prix */
+  line-height: 1.2;
+}
+#cvs-{{ section.id }}-{{ block.id }} .variant-price{
+  margin-top: 2px;        /* était 4px */
+  gap: 4px;               /* était 6px */
+}
+
+/* Optionnel : un poil d’air au-dessus de l’image si besoin */
+#cvs-{{ section.id }}-{{ block.id }} .variant-card img{
+  display: block;
+  margin-top: 4px;        /* ajuste à 0/2/6 selon rendu */
+}
+
+/* L’étiquette reste en place (ne bouge pas) */
+#cvs-{{ section.id }}-{{ block.id }} .variant-badge{
+  /* rien à changer ici, elle reste indépendante du padding de .variant-card */
+}
 
 </style>
 
