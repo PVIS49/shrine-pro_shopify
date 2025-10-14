@@ -323,6 +323,18 @@
   gap: 4px;
   line-height: 1;
 }
+/* Forcer des cellules de grille de même hauteur + étirer les items */
+#cvs-{{ section.id }}-{{ block.id }} .custom-variant-selector{
+  align-items: stretch;      /* plus de décalage vertical entre colonnes */
+  justify-items: stretch;    /* chaque carte occupe toute sa cellule */
+  grid-auto-rows: 1fr;       /* toutes les “lignes” ont la même hauteur */
+}
+
+/* S'assurer que chaque carte remplit bien sa cellule */
+#cvs-{{ section.id }}-{{ block.id }} .custom-variant-selector__block{
+  height: 100%;
+  margin: 0;                 /* au cas où une marge crée un déport */
+}
 
 </style>
 
