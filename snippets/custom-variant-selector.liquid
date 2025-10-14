@@ -162,6 +162,52 @@
 /* La pastille reste en place (inutile de toucher si tu as déjà top:-10px) */
 /* #cvs-... .variant-badge{ top:-10px; } */
 
+
+
+
+
+/* ↓ Version plus basse (≈ 96–100px de haut) */
+#cvs-{{ section.id }}-{{ block.id }} .custom-variant-selector__block{
+  padding: 6px;                 /* moins d’air dans la carte */
+}
+
+#cvs-{{ section.id }}-{{ block.id }} .variant-card{
+  height: 98px;                 /* ↓ était 120/150 → ajuste 94–104 si besoin */
+  padding-top: 12px;            /* garde le “décalage” vers le bas que tu aimes */
+  justify-content: flex-end;    /* ne pas toucher : aligne vers le bas */
+}
+
+/* images compactes et cohérentes */
+#cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-small{
+  height: 34px;                 /* ↓ était 40/50 */
+}
+#cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-large{
+  height: 46px;                 /* ↓ était 56/70 */
+}
+
+/* textes un poil plus denses */
+#cvs-{{ section.id }}-{{ block.id }} .variant-label{
+  font-size: 13px;
+  margin: 3px 0 0;
+  line-height: 1.2;
+}
+#cvs-{{ section.id }}-{{ block.id }} .variant-price{
+  font-size: 11.5px;
+  margin-top: 2px;
+  gap: 4px;
+}
+#cvs-{{ section.id }}-{{ block.id }} .old-price{ font-size: 11.5px; }
+
+/* l’étiquette ne bouge pas (tu peux garder ton top:-10px existant) */
+/* #cvs-{{ section.id }}-{{ block.id }} .variant-badge{ top:-10px; } */
+
+/* Optionnel : un peu plus serré entre les cartes */
+#cvs-{{ section.id }}-{{ block.id }}.custom-variant-selector{
+  gap: 8px;                     /* ↓ si tu veux resserrer la grille */
+}
+
+
+
 </style>
 
 <script>
