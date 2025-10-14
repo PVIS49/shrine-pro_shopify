@@ -335,6 +335,10 @@
   height: 100%;
   margin: 0;                 /* au cas où une marge crée un déport */
 }
+/* Sécurité : empêcher que le contenu interne rétrécisse la carte */
+#cvs-{{ section.id }}-{{ block.id }} .variant-card{
+  height: 100%;
+}
 
 </style>
 
