@@ -339,6 +339,62 @@
 #cvs-{{ section.id }}-{{ block.id }} .variant-card{
   height: 100%;
 }
+/* --- Normalisation d’alignement des 2 cartes --- */
+#cvs-{{ section.id }}-{{ block.id }} .custom-variant-selector{
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;         /* chaque cellule a la même hauteur */
+  justify-items: stretch;
+}
+
+/* chaque carte a la même hauteur et réserve l’espace du badge en haut */
+#cvs-{{ section.id }}-{{ block.id }} .custom-variant-selector__block{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding-top: 28px;            /* capot pour la pastille */
+  min-height: 190px;            /* ← force la même hauteur pour les 2 cartes (ajuste 180–200px si besoin) */
+  margin: 0;                    /* évite tout déport dû aux marges */
+  box-sizing: border-box;
+}
+
+/* on laisse la pastille où elle est, elle ne pousse plus le contenu */
+#cvs-{{ section.id }}-{{ block.id }} .variant-badge{
+  top: 6px;                     /* ou -6px si tu veux qu'elle flotte un peu */
+  transform: translateX(-50%);
+}
+
+/* contenu interne posé en bas de la carte, avec un slot image fixe */
+#cvs-{{ section.id }}-{{ block.id }} .variant-card{
+  margin-top: auto;             /* ↓ ancre le bloc contenu en bas de la carte */
+  display: grid;
+  grid-template-rows: 60px auto auto; /* 60px = hauteur de la zone image */
+  justify-items: center;
+  align-items: end;
+  padding-top: 0;               /* on enlève tout padding-top ajouté avant */
+  height: auto;                 /* suit la hauteur imposée par la carte */
+}
+
+/* hiérarchie des images : 50 ml < 100 ml, tout en restant dans le slot */
+#cvs-{{ section.id }}-{{ block.id }} .variant-card img{
+  width: auto;
+  object-fit: contain;
+  align-self: end;
+  max-height: 56px;             /* plafond global (100 ml) */
+}
+#cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-small{ max-height: 40px; } /* 50 ml */
+#cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-large{ max-height: 56px; } /* 100 ml */
+
+/* espacements texte compacts et constants */
+#cvs-{{ section.id }}-{{ block.id }} .variant-label{
+  margin-top: 6px;
+  margin-bottom: 2px;
+  line-height: 1.2;
+}
+#cvs-{{ section.id }}-{{ block.id }} .variant-price{
+  margin-top: 2px;
+  gap: 4px;
+  line-height: 1;
+}
 
 </style>
 
