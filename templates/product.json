@@ -613,7 +613,7 @@
         "dots_color_scheme": "background-1",
         "desktop_full_page": false,
         "columns_desktop": 3,
-        "slider_desktop": false,
+        "slider_desktop": true,
         "per_move_desktop": 1,
         "desktop_spacing": 40,
         "desktop_side_padding": 0,
@@ -1019,9 +1019,9 @@
           "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
           "settings": {
             "review_data": "real_data",
+            "max_width": 1200,
             "show_shop_reviews": false,
-            "empty_state": "empty_widget",
-            "max_width": 1200
+            "empty_state": "empty_widget"
           }
         }
       },
@@ -1234,7 +1234,7 @@
         "icon_layout": "vertical",
         "icon_size": "medium",
         "icon_color": "accent-1",
-        "cards_color_scheme": "background-1",
+        "cards_color_scheme": "custom",
         "type": "slide",
         "autoplay": false,
         "autoplay_speed": 5,
