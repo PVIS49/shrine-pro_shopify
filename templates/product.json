@@ -524,10 +524,19 @@
     },
     "video_shrine_pro_T7c4dW": {
       "type": "Video-Shrine-Pro",
+      "blocks": {
+        "play_YWfBa4": {
+          "type": "play",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "play_YWfBa4"
+      ],
       "name": "Video",
       "settings": {
         "full_width": true,
-        "autoplay": false,
+        "autoplay": true,
         "video_size": "auto",
         "video": "shopify://files/videos/Parfum Vaillant.mp4",
         "external_video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
