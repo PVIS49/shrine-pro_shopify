@@ -484,7 +484,7 @@
         "hide_when_expired": false,
         "timer_message": "🎄 Soyez sûre de le recevoir avant Noël en passant commande dans les :",
         "timer_expired_message": "Offre terminée",
-        "section_bg": "transparent",
+        "section_bg": "rgba(0,0,0,0)",
         "container_width": 340,
         "bg_color": "#f4f4f5",
         "bg_opacity": 100,
@@ -617,7 +617,7 @@
         "heading_7xrq67": {
           "type": "heading",
           "settings": {
-            "title": "+3 000 clients déjà séduits",
+            "title": "+3 200 clients déjà séduits",
             "title_highlight_color": "#6d388b",
             "heading_size": "h1"
           }
