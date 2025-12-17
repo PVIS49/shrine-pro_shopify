@@ -458,7 +458,7 @@
         "section_border_width": 2,
         "section_border_color": "#1a1a1a",
         "section_border_radius": 16,
-        "section_padding": 5,
+        "section_padding": 10,
         "content_gap": 4,
         "text_color": "#000000",
         "font_size": 13,
