@@ -439,6 +439,7 @@
     },
     "timer_noel_halo_b6r64y": {
       "type": "timer-noel-halo",
+      "disabled": true,
       "name": "Mini Timer (Date Fixe, Cadre Global)",
       "settings": {
         "christmas_theme": false,
@@ -448,7 +449,7 @@
         "end_date": "2025-12-01",
         "end_time": "00:00",
         "hide_when_expired": false,
-        "timer_message": "Profitez de notre offre spéciale avant qu'il ne soit trop tard !",
+        "timer_message": "🎄 Soyez sûre de le recevoir avant Noël en passant commande dans les :",
         "timer_expired_message": "Offre terminée",
         "section_bg": "rgba(0,0,0,0)",
         "container_width": 400,
@@ -474,7 +475,6 @@
     },
     "timer_simple_wrfUET": {
       "type": "timer-simple",
-      "disabled": true,
       "name": "Mini Timer (Date Fixe, Cadre Global)",
       "settings": {
         "christmas_theme": false,
@@ -482,7 +482,7 @@
         "end_date": "2025-12-01",
         "end_time": "00:00",
         "hide_when_expired": false,
-        "timer_message": "Profitez de notre offre spéciale avant qu'il ne soit trop tard !",
+        "timer_message": "🎄 Soyez sûre de le recevoir avant Noël en passant commande dans les :",
         "timer_expired_message": "Offre terminée",
         "section_bg": "transparent",
         "container_width": 400,
