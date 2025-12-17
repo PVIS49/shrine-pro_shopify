@@ -1,0 +1,570 @@
+{% schema %}
+{
+  "name": "Mini Timer (Date Fixe)",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Décoration Saisonnière"
+    },
+    {
+      "type": "checkbox",
+      "id": "christmas_theme",
+      "label": "Activer la guirlande de Noël (Contour)",
+      "default": false,
+      "info": "Remplace la bordure standard par un motif festif rouge, vert et blanc."
+    },
+    {
+      "type": "header",
+      "content": "Configuration de la date"
+    },
+    {
+      "type": "checkbox",
+      "id": "daily_reboot",
+      "label": "Redémarrage quotidien automatique",
+      "default": false,
+      "info": "Si activé, ignore la date ci-dessous et compte à rebours jusqu'à l'heure de fin définie, chaque jour (cycle 24h)."
+    },
+    {
+      "type": "text",
+      "id": "end_date",
+      "label": "Date de fin (AAAA-MM-JJ)",
+      "default": "2025-12-01",
+      "info": "Exemple pour le 1er Décembre 2025 : 2025-12-01. Ignoré si 'Redémarrage quotidien' est actif."
+    },
+    {
+      "type": "text",
+      "id": "end_time",
+      "label": "Heure de fin (HH:MM)",
+      "default": "00:00",
+      "info": "Format 24h. Exemple : 23:59. Utilisé pour la date fixe OU le cycle quotidien."
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_when_expired",
+      "label": "Cacher complètement si expiré",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Textes"
+    },
+    {
+      "type": "text",
+      "id": "timer_message",
+      "label": "Message avant le temps",
+      "default": "Profitez de notre offre spéciale avant qu'il ne soit trop tard !"
+    },
+    {
+      "type": "text",
+      "id": "timer_expired_message",
+      "label": "Message quand expiré",
+      "default": "Offre terminée"
+    },
+    {
+      "type": "header",
+      "content": "Design : Section (Fond)"
+    },
+    {
+      "type": "color",
+      "id": "section_bg",
+      "label": "Couleur de fond de toute la section",
+      "default": "transparent"
+    },
+    {
+      "type": "header",
+      "content": "Design : Cadre Global"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 200,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "label": "Largeur maximale",
+      "default": 400,
+      "info": "Réduisez cette valeur pour forcer le texte à la ligne."
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Couleur de fond du cadre",
+      "default": "#f4f4f5"
+    },
+    {
+      "type": "range",
+      "id": "bg_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Opacité du fond (Glass)",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "blur_amount",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Intensité du flou (Glass)",
+      "default": 0,
+      "info": "Augmentez pour l'effet verre dépoli."
+    },
+    {
+      "type": "range",
+      "id": "section_border_width",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "label": "Épaisseur du cadre global",
+      "default": 2,
+      "info": "Si le thème Noël est actif, l'épaisseur augmente légèrement pour l'effet guirlande."
+    },
+    {
+      "type": "color",
+      "id": "section_border_color",
+      "label": "Couleur du cadre global",
+      "default": "#6b6b85"
+    },
+    {
+      "type": "range",
+      "id": "section_border_radius",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Arrondi du cadre global",
+      "default": 16
+    },
+     {
+      "type": "range",
+      "id": "section_padding",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Espacement interne du cadre",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "content_gap",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Espacement entre texte et timer",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Design : Texte Message"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Couleur du message",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Taille du message",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Design : Blocs Chiffres (Intérieur)"
+    },
+    {
+      "type": "color",
+      "id": "block_bg",
+      "label": "Fond des blocs chiffres",
+      "default": "#6b6b85"
+    },
+    {
+      "type": "color",
+      "id": "timer_color",
+      "label": "Couleur des chiffres",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "unit_text_color",
+      "label": "Couleur des unités (Jours/Min...)",
+      "default": "#ffffff",
+      "info": "Texte sous les chiffres."
+    },
+    {
+      "type": "range",
+      "id": "number_size",
+      "min": 14,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "label": "Taille des chiffres",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "block_border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Arrondi des blocs chiffres",
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Positionnement Section"
+    },
+    {
+      "type": "range",
+      "id": "margin_y",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Marge externe (haut/bas)",
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignement du cadre",
+      "options": [
+        { "value": "flex-start", "label": "Gauche" },
+        { "value": "center", "label": "Centré" },
+        { "value": "flex-end", "label": "Droite" }
+      ],
+      "default": "center"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Mini Timer (Date Fixe, Cadre Global)"
+    }
+  ]
+}
+{% endschema %}
+
+<div id="mini-timer-section-{{ section.id }}" class="mini-timer-section" style="
+  --mt-section-bg: {{ section.settings.section_bg }};
+  --mt-bg: {{ section.settings.bg_color }};
+  --mt-bg-opacity: {{ section.settings.bg_opacity | divided_by: 100.0 }};
+  --mt-blur: {{ section.settings.blur_amount }}px;
+  
+  --mt-section-border: {{ section.settings.section_border_color }};
+  --mt-section-border-w: {{ section.settings.section_border_width }}px;
+  --mt-section-radius: {{ section.settings.section_border_radius }}px;
+  --mt-section-padding: {{ section.settings.section_padding }}px;
+  --mt-max-width: {{ section.settings.container_width }}px;
+  --mt-gap: {{ section.settings.content_gap }}px;
+  
+  --mt-text: {{ section.settings.text_color }};
+  --mt-size: {{ section.settings.font_size }}px;
+  
+  --mt-accent: {{ section.settings.timer_color }};
+  --mt-unit-color: {{ section.settings.unit_text_color }};
+  --mt-block-bg: {{ section.settings.block_bg }};
+  --mt-block-radius: {{ section.settings.block_border_radius }}px;
+  --mt-num-size: {{ section.settings.number_size }}px;
+  
+  --mt-margin: {{ section.settings.margin_y }}px;
+  --mt-align: {{ section.settings.alignment }};
+">
+  <div class="mini-timer-container {% if section.settings.christmas_theme %}christmas-mode{% endif %}">
+    <span class="timer-label">{{ section.settings.timer_message }}</span>
+    
+    <div class="timer-countdown-blocks" id="product-countdown-{{ section.id }}">
+      <!-- Jours -->
+      <div class="timer-block hidden" id="timer-days-block-{{ section.id }}">
+        <span class="timer-number" id="timer-days-{{ section.id }}">--</span>
+        <span class="timer-unit">Jours</span>
+      </div>
+      <!-- Séparateur -->
+      <span class="timer-separator hidden" id="timer-sep-days-{{ section.id }}">:</span>
+      
+      <!-- Heures -->
+      <div class="timer-block">
+        <span class="timer-number" id="timer-hours-{{ section.id }}">--</span>
+        <span class="timer-unit">Heures</span>
+      </div>
+      <span class="timer-separator">:</span>
+      
+      <!-- Minutes -->
+      <div class="timer-block">
+        <span class="timer-number" id="timer-minutes-{{ section.id }}">--</span>
+        <span class="timer-unit">Min</span>
+      </div>
+      <span class="timer-separator">:</span>
+      
+      <!-- Secondes -->
+      <div class="timer-block">
+        <span class="timer-number" id="timer-seconds-{{ section.id }}">--</span>
+        <span class="timer-unit">Sec</span>
+      </div>
+    </div>
+    
+    <!-- Message d'expiration (caché par défaut) -->
+    <span class="timer-expired-text hidden" id="timer-expired-{{ section.id }}">{{ section.settings.timer_expired_message }}</span>
+  </div>
+</div>
+
+<style>
+  .mini-timer-section {
+    width: 100%;
+    display: flex;
+    justify-content: var(--mt-align);
+    margin: var(--mt-margin) 0;
+    padding: 0 16px;
+    box-sizing: border-box;
+    background-color: var(--mt-section-bg); /* Couleur de fond de toute la section */
+  }
+  
+  /* Classe pour cacher la section via JS */
+  .mini-timer-section.hidden {
+    display: none !important;
+  }
+  
+  /* Classes utilitaires pour cacher des éléments */
+  .hidden {
+    display: none !important;
+  }
+
+  .mini-timer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--mt-gap);
+    
+    /* Design du cadre global avec effet Glass */
+    background-color: color-mix(in srgb, var(--mt-bg), transparent calc(100% - (var(--mt-bg-opacity) * 100%)));
+    backdrop-filter: blur(var(--mt-blur));
+    -webkit-backdrop-filter: blur(var(--mt-blur));
+    
+    /* Bordure Standard (sera écrasée si christmas-mode actif) */
+    border: var(--mt-section-border-w) solid var(--mt-section-border);
+    border-radius: var(--mt-section-radius);
+    padding: var(--mt-section-padding);
+    
+    /* Largeur et retour à la ligne */
+    max-width: var(--mt-max-width);
+    width: 100%; 
+    
+    font-family: inherit;
+    color: var(--mt-text);
+    position: relative; /* Pour les décorations */
+  }
+
+  /* --- THEME NOËL (GUIRLANDE/RUBAN) --- */
+  .mini-timer-container.christmas-mode {
+    /* On enlève la bordure solide classique pour la remplacer par le motif */
+    border: 4px solid transparent; 
+    
+    /* Gradient complexe pour effet ruban Rouge/Blanc/Vert */
+    background: 
+      linear-gradient(color-mix(in srgb, var(--mt-bg), transparent calc(100% - (var(--mt-bg-opacity) * 100%))), color-mix(in srgb, var(--mt-bg), transparent calc(100% - (var(--mt-bg-opacity) * 100%)))) padding-box,
+      repeating-linear-gradient(45deg, 
+        #D32F2F 0, 
+        #D32F2F 12px, 
+        #ffffff 12px, 
+        #ffffff 20px, 
+        #388E3C 20px, 
+        #388E3C 32px, 
+        #ffffff 32px, 
+        #ffffff 40px
+      ) border-box;
+      
+    /* Légère ombre portée rouge/verte */
+    box-shadow: 0 4px 15px rgba(211, 47, 47, 0.15);
+  }
+  
+  .timer-label {
+    font-weight: 700;
+    text-align: center;
+    color: var(--mt-text);
+    font-size: var(--mt-size);
+    line-height: 1.4;
+    padding: 0 10px; /* Padding latéral supplémentaire pour forcer le retour à la ligne */
+  }
+
+  .timer-countdown-blocks {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap; /* Sécurité mobile */
+    justify-content: center;
+  }
+  
+  .timer-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--mt-block-bg);
+    border-radius: var(--mt-block-radius);
+    min-width: 60px;
+    padding: 8px 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Légère ombre pour le relief */
+  }
+  
+  .timer-number {
+    color: var(--mt-accent);
+    font-weight: 800;
+    font-size: var(--mt-num-size);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 2px;
+  }
+  
+  .timer-unit {
+    color: var(--mt-unit-color);
+    font-size: 10px;
+    opacity: 0.9;
+    text-transform: lowercase;
+    font-weight: 500;
+    line-height: 1;
+  }
+  
+  .timer-separator {
+    font-weight: 700;
+    font-size: var(--mt-num-size);
+    color: var(--mt-text);
+    margin-bottom: 12px; /* Ajustement visuel */
+    opacity: 0.5;
+  }
+  
+  .timer-expired-text {
+      font-weight: 700;
+      color: var(--mt-text);
+      font-size: var(--mt-num-size);
+  }
+  
+  @media (max-width: 480px) {
+    .timer-block {
+        min-width: 50px;
+        padding: 6px 4px;
+    }
+    .timer-number {
+        font-size: calc(var(--mt-num-size) * 0.9);
+    }
+  }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const sectionId = '{{ section.id }}';
+  const sectionContainer = document.getElementById(`mini-timer-section-${sectionId}`);
+  const countdownContainer = document.getElementById(`product-countdown-${sectionId}`);
+  const expiredText = document.getElementById(`timer-expired-${sectionId}`);
+  
+  // Éléments individuels
+  const daysBlock = document.getElementById(`timer-days-block-${sectionId}`);
+  const daysSep = document.getElementById(`timer-sep-days-${sectionId}`);
+  const daysEl = document.getElementById(`timer-days-${sectionId}`);
+  const hoursEl = document.getElementById(`timer-hours-${sectionId}`);
+  const minutesEl = document.getElementById(`timer-minutes-${sectionId}`);
+  const secondsEl = document.getElementById(`timer-seconds-${sectionId}`);
+
+  if (!countdownContainer) return;
+
+  // Récupération des paramètres Liquid
+  const endDateStr = "{{ section.settings.end_date }}"; 
+  const endTimeStr = "{{ section.settings.end_time }}"; 
+  const hideWhenExpired = {{ section.settings.hide_when_expired | json }};
+  const dailyReboot = {{ section.settings.daily_reboot | json }};
+
+  let targetDate;
+
+  if (dailyReboot) {
+    // Mode Quotidien
+    const now = new Date();
+    // Parse l'heure de fin (ex: "00:00")
+    let [h, m] = endTimeStr.split(':').map(Number);
+    if (isNaN(h)) h = 0;
+    if (isNaN(m)) m = 0;
+
+    const todayTarget = new Date();
+    todayTarget.setHours(h, m, 0, 0);
+
+    // Si l'heure est déjà passée aujourd'hui, on vise demain
+    if (now > todayTarget) {
+      todayTarget.setDate(todayTarget.getDate() + 1);
+    }
+    targetDate = todayTarget.getTime();
+  } else {
+    // Mode Date Fixe
+    let targetDateString = endDateStr + 'T' + endTimeStr + ':00';
+    targetDate = new Date(targetDateString).getTime();
+  }
+
+  // Si la date est invalide (seulement check en mode Date Fixe)
+  if (isNaN(targetDate)) {
+    console.error("Date de fin invalide dans le Mini Timer.");
+    if(countdownContainer) countdownContainer.textContent = "Date invalide";
+    return;
+  }
+
+  function updateTimer() {
+    const now = new Date().getTime();
+    let distance = targetDate - now;
+
+    if (distance < 0) {
+      if (dailyReboot) {
+         // Si le temps est écoulé en mode quotidien, on repart pour 24h
+         targetDate += 24 * 60 * 60 * 1000;
+         distance = targetDate - now; 
+      } else {
+        // Le temps est écoulé (mode Date Fixe)
+        if (hideWhenExpired) {
+          if(sectionContainer) sectionContainer.classList.add('hidden');
+        } else {
+          // On cache le compteur et on affiche le message d'expiration
+          if(countdownContainer) countdownContainer.classList.add('hidden');
+          if(expiredText) expiredText.classList.remove('hidden');
+        }
+        clearInterval(timerInterval); // On arrête le timer
+        return;
+      }
+    }
+
+    // Calculs
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    // Formatage avec zéros
+    const fHours = hours < 10 ? "0" + hours : hours;
+    const fMinutes = minutes < 10 ? "0" + minutes : minutes;
+    const fSeconds = seconds < 10 ? "0" + seconds : seconds;
+
+    // Mise à jour des éléments
+    if (days > 0) {
+      if(daysBlock) daysBlock.classList.remove('hidden');
+      if(daysSep) daysSep.classList.remove('hidden');
+      if(daysEl) daysEl.textContent = days;
+    } else {
+      if(daysBlock) daysBlock.classList.add('hidden');
+      if(daysSep) daysSep.classList.add('hidden');
+    }
+    
+    if(hoursEl) hoursEl.textContent = fHours;
+    if(minutesEl) minutesEl.textContent = fMinutes;
+    if(secondsEl) secondsEl.textContent = fSeconds;
+  }
+
+  // Lancement
+  updateTimer();
+  const timerInterval = setInterval(updateTimer, 1000);
+});
+</script>
