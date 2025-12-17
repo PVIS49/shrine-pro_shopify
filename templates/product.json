@@ -207,6 +207,15 @@
             "margin_bottom": 24
           }
         },
+        "urgency_64B6Pn": {
+          "type": "urgency",
+          "settings": {
+            "urgency": "🚚 Commandez avant le 19 décembre pour être livré à Noël 🎄",
+            "color_scheme": "accent-1",
+            "margin_top": 0,
+            "margin_bottom": 15
+          }
+        },
         "e0a0b690-50df-4ca4-acfd-ce2980696cce": {
           "type": "shipping_checkpoints",
           "settings": {
@@ -382,6 +391,7 @@
         "custom_liquid_eyTAEn",
         "04ba004e-2f54-4936-8b1c-8bcadf6573f6",
         "buy_buttons",
+        "urgency_64B6Pn",
         "e0a0b690-50df-4ca4-acfd-ce2980696cce",
         "payment_badges_e9TVML",
         "e7a28cbe-03cb-4c9d-a2c4-0e3e76ffb3e5",
