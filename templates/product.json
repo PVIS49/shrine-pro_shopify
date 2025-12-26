@@ -120,7 +120,7 @@
         "urgency_64B6Pn": {
           "type": "urgency",
           "settings": {
-            "urgency": "🚚 Commandez avant le 19 décembre pour être livré à Noël 🎄",
+            "urgency": "🚚 Commandez vite pour être livré avant les fêtes 🎉",
             "color_scheme": "accent-1",
             "margin_top": 0,
             "margin_bottom": 15
@@ -449,6 +449,7 @@
     },
     "timer_noel_halo_b6r64y": {
       "type": "timer-noel-halo",
+      "disabled": true,
       "name": "Mini Timer (Date Fixe, Cadre Global)",
       "settings": {
         "christmas_theme": true,
@@ -479,39 +480,6 @@
         "block_border_radius": 6,
         "margin_top": 20,
         "margin_bottom": 20,
-        "alignment": "center"
-      }
-    },
-    "timer_simple_wrfUET": {
-      "type": "timer-simple",
-      "disabled": true,
-      "name": "Mini Timer (Date Fixe, Cadre Global)",
-      "settings": {
-        "christmas_theme": false,
-        "daily_reboot": true,
-        "end_date": "2025-12-01",
-        "end_time": "00:00",
-        "hide_when_expired": false,
-        "timer_message": "🎄 Soyez sûre de le recevoir avant Noël en passant commande dans les :",
-        "timer_expired_message": "Offre terminée",
-        "section_bg": "rgba(0,0,0,0)",
-        "container_width": 340,
-        "bg_color": "#f4f4f5",
-        "bg_opacity": 100,
-        "blur_amount": 0,
-        "section_border_width": 2,
-        "section_border_color": "#6b6b85",
-        "section_border_radius": 16,
-        "section_padding": 30,
-        "content_gap": 8,
-        "text_color": "#000000",
-        "font_size": 15,
-        "block_bg": "#6b6b85",
-        "timer_color": "#ffffff",
-        "unit_text_color": "#ffffff",
-        "number_size": 24,
-        "block_border_radius": 6,
-        "margin_y": 20,
         "alignment": "center"
       }
     },
@@ -1526,7 +1494,6 @@
   "order": [
     "main",
     "timer_noel_halo_b6r64y",
-    "timer_simple_wrfUET",
     "image_slider_Ukgjcc",
     "rich_text_3xDhQz",
     "image_with_text_TtxikA",
