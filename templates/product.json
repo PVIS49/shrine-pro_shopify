@@ -449,7 +449,6 @@
     },
     "timer_noel_halo_b6r64y": {
       "type": "timer-noel-halo",
-      "disabled": true,
       "name": "Mini Timer (Date Fixe, Cadre Global)",
       "settings": {
         "christmas_theme": true,
