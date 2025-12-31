@@ -12,30 +12,33 @@
       <span class="variant-indicator"></span>
       <input type="radio" name="custom_variant_id" class="hidden-radio" value="{{ variant.id }}" {% if forloop.first %}checked{% endif %}>
       <div class="variant-card">
+        
+        {% comment %} ↓↓↓↓↓↓↓ ZONE A MODIFIER ↓↓↓↓↓↓↓ {% endcomment %}
         {% if forloop.index == 2 %}
-  <div class="variant-badge">OFFRE DE NOËL</div>
-{% endif %}
+          <div class="variant-badge">OFFRE SPÉCIALE FÊTES</div>
+        {% endif %}
+        {% comment %} ↑↑↑↑↑↑↑ FIN ZONE A MODIFIER ↑↑↑↑↑↑↑ {% endcomment %}
 
-    {% if variant.metafields.custom.custom_image %}
-  <img
-    src="{{ variant.metafields.custom.custom_image | image_url: width: 300 }}"
-    alt="{{ variant.title }}"
-    class="{% if forloop.index == 1 %}img-small{% else %}img-large{% endif %}">
-{% elsif variant.featured_media %}
-  <img
-    src="{{ variant.featured_media.preview_image | image_url: width: 300 }}"
-    alt="{{ variant.title }}"
-    class="{% if forloop.index == 1 %}img-small{% else %}img-large{% endif %}">
-{% endif %}
+        {% if variant.metafields.custom.custom_image %}
+          <img
+            src="{{ variant.metafields.custom.custom_image | image_url: width: 300 }}"
+            alt="{{ variant.title }}"
+            class="{% if forloop.index == 1 %}img-small{% else %}img-large{% endif %}">
+        {% elsif variant.featured_media %}
+          <img
+            src="{{ variant.featured_media.preview_image | image_url: width: 300 }}"
+            alt="{{ variant.title }}"
+            class="{% if forloop.index == 1 %}img-small{% else %}img-large{% endif %}">
+        {% endif %}
 
 
         <p class="variant-label">{{ variant.title }}</p>
-<div class="variant-price">
-  {% if variant.compare_at_price > variant.price %}
-    <span class="old-price">{{ variant.compare_at_price | money }}</span>
-  {% endif %}
-  <span class="current-price">{{ variant.price | money }}</span>
-</div>
+        <div class="variant-price">
+          {% if variant.compare_at_price > variant.price %}
+            <span class="old-price">{{ variant.compare_at_price | money }}</span>
+          {% endif %}
+          <span class="current-price">{{ variant.price | money }}</span>
+        </div>
       </div>
     </label>
   {% endfor %}
@@ -89,7 +92,7 @@
   background:#f6f6f6;
 }
 
-/*  décorations inchangées  */
+/* décorations inchangées  */
 .variant-badge {
   position: absolute;
   top: 6px;
@@ -200,12 +203,6 @@
   #cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-small{ height: 39px; }
   #cvs-{{ section.id }}-{{ block.id }} .variant-card img.img-large{ height: 53px; }
 }
-
-
-
-
-
-
 </style>
 
 <script>
