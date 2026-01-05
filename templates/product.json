@@ -458,7 +458,7 @@
         "end_date": "2025-12-01",
         "end_time": "00:00",
         "hide_when_expired": false,
-        "timer_message": "Profitez de notre offre spéciale fêtes avant minuit",
+        "timer_message": "Profitez de notre offre spéciale avant minuit",
         "timer_expired_message": "Offre terminée",
         "section_bg": "rgba(0,0,0,0)",
         "container_width": 340,
