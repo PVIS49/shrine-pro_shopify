@@ -451,7 +451,7 @@
       "type": "timer-noel-halo",
       "name": "Mini Timer (Date Fixe, Cadre Global)",
       "settings": {
-        "christmas_theme": true,
+        "christmas_theme": false,
         "halo_color": "#d32f2f",
         "halo_intensity": 20,
         "daily_reboot": true,
